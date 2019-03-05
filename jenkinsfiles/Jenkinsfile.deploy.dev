@@ -18,7 +18,11 @@ def STABLE_TAG = 'UNKNOWN'
 
 pipeline {
   parameters {
-    string(name: 'APP_NAME', defaultValue: '', description: 'The name of the service to deploy.', trim: true)
+    string(name: 'SERVICE', defaultValue: '', description: 'The name of the service to deploy.', trim: true)
+    string(name: 'STAGE', defaultValue: '', description: 'The stage to deploye the service to.', trim: true)
+    string(name: 'PROJECT', defaultValue: '', description: 'The name of the project.', trim: true)
+    string(name: 'GITHUB_ORG', defaultValue: '', description: 'The name of the GitHub org.', trim: true)
+
   }
   agent {
     label 'kubegit'
@@ -29,18 +33,18 @@ pipeline {
         container('git') {
           withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
-            sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUB_ORGANIZATION}/keptn-config"
-            sh "cd keptn-config && git checkout dev"
+            sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUB_ORG}/${env.PROJECT}"
+            sh "cd ${env.PROJECT} && git checkout ${env.STAGE}"
           }
         }
       }
     }
-    stage('Deploy to dev namespace') {
+    stage('Deploy service') {
       steps {
         container('helm') {
           sh "helm init --client-only"
-          sh "cd keptn-config && helm dep update helm-chart/"
-          sh "cd keptn-config && helm upgrade --install ${env.GITHUB_ORGANIZATION}-dev ./helm-chart --namespace dev"
+          sh "cd ${env.PROJECT} && helm dep update helm-chart/"
+          sh "cd ${env.PROJECT} && helm upgrade --install ${env.GITHUB_ORG}-${env.STAGE} ./helm-chart --namespace ${env.STAGE}"
         }
       }
     }  
@@ -48,7 +52,7 @@ pipeline {
       steps {
         container("curl") {
           script {
-            tagMatchRules[0].tags[0].value = "${env.APP_NAME}"
+            tagMatchRules[0].tags[0].value = "${env.SERVICE_NAME}"
             def status = pushDynatraceDeploymentEvent (
               tagRule : tagMatchRules,
               customProperties : [
