@@ -1,5 +1,7 @@
 import { DeploymentModel } from '../types/DeploymentModel';
 
+const jenkins = require('jenkins')({ baseUrl: process.env.JENKINS_URL });
+
 export class JenkinsService {
 
   private static instance: JenkinsService;
@@ -15,7 +17,14 @@ export class JenkinsService {
   }
 
   async deployService(deployment: DeploymentModel) : Promise<boolean> {
-    let updated: boolean = false;
+    const updated: boolean = false;
+
+    jenkins.job.build({ name: `deploy`, parameters: {
+      SERVICE: deployment.service,
+      STAGE: deployment.stage,
+      PROJECT: 'sockshop',
+      GITHUB_ORG: 'keptn-tiger',
+    } });
 
     return updated;
   }

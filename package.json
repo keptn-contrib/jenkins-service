@@ -52,7 +52,8 @@
     "reflect-metadata": "^0.1.13",
     "swagger-express-ts": "^1.0.1",
     "swagger-ui-dist": "^3.20.9",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "jenkins": "^0.23.0"
   },
   "nyc": {
     "include": [
