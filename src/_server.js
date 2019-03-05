@@ -6,7 +6,7 @@ var app = express();
 // parse application/json
 app.use(bodyParser.json())
 
-var jenkinsOperator = require('./operator.js').jenkinsNotificationListener;
+var jenkinsOperator = require('../operator.js').jenkinsNotificationListener;
 
 app.post('/jenkinsOperator', jenkinsOperator);
 

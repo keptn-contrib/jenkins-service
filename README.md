@@ -1,36 +1,36 @@
-# Keptn Jenkins Operator
+# Keptn Jenkins Service
 
-This operator is designed to use Jenkins as pipeline executor for various tasks. Thus, this operator has a pipeline to:
+This service is designed to use Jenkins as pipeline executor for various tasks. Thus, this service has a pipeline to:
 * change a configuration of a service,
 * deploy a service to a dev environment,
 * deploy a service to a staging environment, and
 * deploy a service to a production environment.
 
-In its current implementation, the operator contains a GitHub operator in order to listen to GitHub events. 
+In its current implementation, the service contains a GitHub service in order to listen to GitHub events. 
 
 ##### Table of Contents
- * [Install operator](#install)
- * [Uninstall operator](#install)
+ * [Install service](#install)
+ * [Uninstall service](#install)
 
-## Install operator <a id="install"></a>
+## Install service <a id="install"></a>
 
-1. Go to `~/jenkins-operator`.
+1. Go to `~/jenkins-service`.
 
     ```console
     $ pwd
-    ~/jenkins-operator
+    ~/jenkins-service
     ```
 
-1. This operator needs a Jenkins running in your cluster. Therefore, execute the `kubectl apply -f ./manifests/jenkins/*` command:
+1. This service needs a Jenkins running in your cluster. Therefore, execute the `kubectl apply -f ./manifests/jenkins/*` command:
 
     ```console
     $ kubectl apply -f ./manifests/jenkins/*
     ```
 
-1. To install the operator, execute the `kubectl apply -f ./manifests/operator/*` command: 
+1. To install the service, execute the `kubectl apply -f ./manifests/service/*` command: 
 
     ```console
-    $ kubectl apply -f ./manifests/operator/*
+    $ kubectl apply -f ./manifests/service/*
     ```
 
 1. To verify the installation, run the following `kubectl` command: 
@@ -41,11 +41,11 @@ In its current implementation, the operator contains a GitHub operator in order 
     ???
     ```
 
-## Uninstall operator <a id="install"></a>
+## Uninstall service <a id="install"></a>
 
-1. To uninstall the Jenkins and operator, run the following commands:
+1. To uninstall the Jenkins and service, run the following commands:
 
     ```console
-    $ kubectl delete -f ./manifests/operator/*
+    $ kubectl delete -f ./manifests/service/*
     $ kubectl delete -f ./manifests/jenkins/*
     ```

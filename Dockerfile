@@ -6,14 +6,22 @@ RUN addgroup mygroup && adduser -D -G mygroup myuser && mkdir -p /usr/src/app &&
 
 # Prepare app directory
 WORKDIR /usr/src/app
+
 COPY package.json /usr/src/app/
 
-
-USER myuser
-RUN npm install
+RUN npm install -g tsc 
+RUN npm install -g concurrently 
+RUN npm install -g typescript
+RUN npm install -g copyfiles
 
 COPY . /usr/src/app
 
+RUN ls -la /usr/src/app/*
+
+RUN npm install
+RUN npm run build-ts
+
+USER myuser
+
 # Start the app
-#CMD ["/usr/local/bin/npm", "start", "--domain=.jx-staging.35.241.184.104.nip.io"] 
 CMD ["/usr/local/bin/npm", "start"]

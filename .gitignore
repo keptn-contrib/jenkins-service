@@ -1,5 +1,5 @@
 # Auto-generated files
-config/operator/gen/operator.yaml
+config/service/gen/service.yaml
 
 # Logs
 *.log

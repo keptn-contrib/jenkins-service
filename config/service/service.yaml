@@ -3,7 +3,7 @@
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: jenkins-operator
+  name: jenkins-service
   namespace: keptn
 spec:
   runLatest:
@@ -12,23 +12,23 @@ spec:
         apiVersion: build.knative.dev/v1alpha1
         kind: Build
         metadata:
-          name: operator-builder
+          name: service-builder
           namespace: keptn
         spec:
           serviceAccountName: build-bot
           source:
             git:
-              url: https://github.com/keptn/jenkins-operator.git
+              url: https://github.com/keptn/jenkins-service.git
               revision: master
           template:
             name: kaniko
             arguments:
               - name: IMAGE
-                value: docker-registry.cicd.svc.cluster.local:5000/keptn/jenkins-operator:latest
+                value: docker-registry.cicd.svc.cluster.local:5000/keptn/jenkins-service:latest
       revisionTemplate:
         spec:
           container:
-            image: REGISTRY_URI_PLACEHOLDER:5000/keptn/jenkins-operator:latest
+            image: REGISTRY_URI_PLACEHOLDER:5000/keptn/jenkins-service:latest
             env: 
             - name: JENKINS_URL
               valueFrom:
@@ -42,7 +42,7 @@ spec:
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Subscription
 metadata:
-  name: jenkins-operator-subscription
+  name: jenkins-service-subscription
   namespace: keptn
 spec:
   channel:
@@ -53,4 +53,4 @@ spec:
     ref:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
-      name: jenkins-operator
+      name: jenkins-service
