@@ -44,7 +44,7 @@ pipeline {
         container('helm') {
           sh "helm init --client-only"
           sh "cd ${env.PROJECT} && helm dep update helm-chart/"
-          sh "cd ${env.PROJECT} && helm upgrade --install ${env.GITHUB_ORG}-${env.STAGE} ./helm-chart --namespace ${env.STAGE}"
+          sh "cd ${env.PROJECT} && helm upgrade --install ${env.SERVICE}-${env.STAGE} ./helm-chart --namespace ${env.STAGE}"
         }
       }
     }
@@ -52,7 +52,7 @@ pipeline {
       steps {
         container("curl") {
           script {
-            tagMatchRules[0].tags[0].value = "${env.SERVICE_NAME}"
+            tagMatchRules[0].tags[0].value = "${env.SERVICE}"
             tagMatchRules[0].tags[1].value = "${env.PROJECT}"
             tagMatchRules[0].tags[2].value = "${env.STAGE}"
             def status = pushDynatraceDeploymentEvent (

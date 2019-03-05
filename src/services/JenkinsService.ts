@@ -25,9 +25,9 @@ export class JenkinsService {
         name: `/deploy`,
         parameters: {
           SERVICE: deployment.service,
-          PROJECT: 'sockshop',
+          PROJECT: deployment.project,
           STAGE: deployment.stage,
-          GITHUB_ORG: 'keptn-tiger',
+          GITHUB_ORG: deployment.githubOrg,
         },
       }, function(err) {
         if (err) console.log(err);
