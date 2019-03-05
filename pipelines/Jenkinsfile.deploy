@@ -6,8 +6,9 @@ def tagMatchRules = [
       [meType: 'SERVICE']
     ],
     tags : [
+      [context: 'CONTEXTLESS', key: 'service', value: ''],
       [context: 'CONTEXTLESS', key: 'app', value: ''],
-      [context: 'CONTEXTLESS', key: 'environment', value: 'dev']
+      [context: 'CONTEXTLESS', key: 'environment', value: '']
     ]
   ]
 ]
@@ -19,8 +20,8 @@ def STABLE_TAG = 'UNKNOWN'
 pipeline {
   parameters {
     string(name: 'SERVICE', defaultValue: '', description: 'The name of the service to deploy.', trim: true)
-    string(name: 'STAGE', defaultValue: '', description: 'The stage to deploy the service to.', trim: true)
     string(name: 'PROJECT', defaultValue: '', description: 'The name of the entire project.', trim: true)
+    string(name: 'STAGE', defaultValue: '', description: 'The stage to deploy the service to.', trim: true)
     string(name: 'GITHUB_ORG', defaultValue: '', description: 'The name of the GitHub organization.', trim: true)
   }
   agent {
@@ -30,7 +31,11 @@ pipeline {
     stage('Check out config') {
       steps {
         container('git') {
-            sh "echo hallo"
+          withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+            sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
+            sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUB_ORG}/${env.PROJECT}"
+            sh "cd ${env.PROJECT} && git checkout ${env.STAGE}"
+          }
         }
       }
     }
