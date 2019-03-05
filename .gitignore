@@ -1,6 +1,9 @@
 # Auto-generated files
 config/service/gen/service.yaml
 
+# nyc output
+.nyc_output
+
 # Logs
 *.log
 
@@ -29,3 +32,6 @@ node_modules
 # OS
 .DS_Store
 .tmp
+
+# Dist directory
+dist/

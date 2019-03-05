@@ -13,7 +13,7 @@ import * as swagger from 'swagger-express-ts';
 import './controls/JenkinsController';
 
 // import models
-import './types/..';
+//import './types/..';
 
 // import RequestLogger = require('./middleware/requestLogger');
 import * as path from 'path';
@@ -41,7 +41,7 @@ server.setConfig((app: any) => {
     swagger.express({
       definition: {
         info: {
-          title: 'GitHub Operator',
+          title: 'GitHub Service',
           version: '0.1',
         },
         externalDocs: {
