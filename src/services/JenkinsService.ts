@@ -40,32 +40,25 @@ export class JenkinsService {
 
   async startTests(deployment: DeploymentModel) : Promise<boolean> {
     let started: boolean = false;
+    let pipeline : string = '';
 
-    if(deployment.stage === 'dev') {
-      new Promise(resolve => {
-        jenkins.job.build({
-          name: `/test.dev`,
-          parameters: {
-            SERVICE: deployment.service,
-          },
-        }, function(err) {
-          if (err) console.log(err);
-          resolve();
-        });
-      });
-    } else if(deployment.stage === 'staging') {
-      new Promise(resolve => {
-        jenkins.job.build({
-          name: `/test.staging`,
-          parameters: {
-            SERVICE: deployment.service,
-          },
-        }, function(err) {
-          if (err) console.log(err);
-          resolve();
-        });
-      });
+    if (deployment.stage === 'dev') {
+      pipeline = '/test.dev';
+    } else if (deployment.stage === 'staging') {
+      pipeline = '/test.staging';
     }
+
+    new Promise(resolve => {
+      jenkins.job.build({
+        name: pipeline,
+        parameters: {
+          SERVICE: deployment.service,
+        },
+      }, function(err) {
+        if (err) console.log(err);
+        resolve();
+      });
+    });
 
     return started;
   }
