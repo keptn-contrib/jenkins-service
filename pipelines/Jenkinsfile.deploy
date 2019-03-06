@@ -69,7 +69,7 @@ pipeline {
   post {
     always {
       container("curl") {
-        sh "curl -X POST \"KEPTN_OPERATOR_PLACEHOLDER\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"{ \\\"status\\\": \\\"success\\\", \\\"environment\\\": \\\"dev\\\", \\\"service\\\": \\\"${env.APP_NAME}\\\", \\\"github_org\\\": \\\"${env.GITHUB_ORGANIZATION}\\\", \\\"pull_request\\\": \\\"${PULL_REQUEST}\\\"}\" "       
+        sh "curl -X POST event-broker.keptn.104.197.134.81.xip.io -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"{ \\\"status\\\": \\\"success\\\", \\\"environment\\\": \\\"${env.STAGE}\\\", \\\"service\\\": \\\"${env.SERVICE}\\\", \\\"github_org\\\": \\\"${env.GITHUB_ORG}\\\"}\" "       
       }
     }
   }

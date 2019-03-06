@@ -22,3 +22,10 @@ cat config/jenkins/k8s-jenkins-deployment.yml | \
 kubectl create -f config/jenkins/k8s-jenkins-pvcs.yml 
 kubectl create -f config/service/gen/k8s-jenkins-deployment.yml
 kubectl create -f config/jenkins/k8s-jenkins-rbac.yml
+
+# Deploy Tiller for Helm
+kubectl -n kube-system create serviceaccount tiller
+kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+helm init --service-account tiller
+
+#kubectl -n kube-system  rollout status deploy/tiller-deploy
