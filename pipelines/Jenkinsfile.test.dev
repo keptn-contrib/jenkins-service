@@ -15,8 +15,8 @@ pipeline {
             def status = executeJMeter ( 
               scriptName: 'jmeter/basiccheck.jmx', 
               resultsDir: "HealthCheck_${env.SERVICE}",
-              serverUrl: "${env.SERVICE}.dev", 
-              serverPort: 80,
+              serverUrl: "${env.SERVICE}", 
+              serverPort: 8080,
               checkPath: '/health',
               vuCount: 1,
               loopCount: 1,
