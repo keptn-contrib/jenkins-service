@@ -1,0 +1,67 @@
+@Library('dynatrace@master') _
+
+pipeline {
+  parameters {
+    string(name: 'SERVICE', defaultValue: '', description: 'The name of the service to deploy.', trim: true)
+  }
+  agent {
+    label 'kubegit'
+  }
+  stages {
+    stage('Run health check in dev') {
+      steps {
+        container('jmeter') {
+          script {
+            def status = executeJMeter ( 
+              scriptName: 'jmeter/basiccheck.jmx', 
+              resultsDir: "HealthCheck_${env.SERVICE}",
+              serverUrl: "${env.SERVICE}.dev", 
+              serverPort: 80,
+              checkPath: '/health',
+              vuCount: 1,
+              loopCount: 1,
+              LTN: "HealthCheck_${BUILD_NUMBER}",
+              funcValidation: true,
+              avgRtValidation: 0
+            )
+            if (status != 0) {
+              currentBuild.result = 'FAILED'
+              error "Health check in dev failed."
+            }
+          }
+        }
+      }
+    }
+    stage('Run functional check in dev') {
+      steps {
+        container('jmeter') {
+          script {
+            def status = executeJMeter (
+              scriptName: "jmeter/${env.SERVICE}_load.jmx", 
+              resultsDir: "FuncCheck_${env.SERVICE}",
+              serverUrl: "${env.SERVICE}.dev", 
+              serverPort: 80,
+              checkPath: '/health',
+              vuCount: 1,
+              loopCount: 1,
+              LTN: "FuncCheck_${BUILD_NUMBER}",
+              funcValidation: true,
+              avgRtValidation: 0
+            )
+            if (status != 0) {
+              currentBuild.result = 'FAILED'
+              error "Functional check in dev failed."
+            }
+          }
+        }
+      }
+    }
+  }
+  post {
+    always {
+      container("curl") {
+        sh "curl -X POST event-broker.keptn.35.239.5.164.xip.io -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"{ \\\"status\\\": \\\"success\\\", \\\"environment\\\": \\\"dev\\\", \\\"service\\\": \\\"${env.SERVICE}\\\", \\\"github_org\\\": \\\"${env.GITHUB_ORGANIZATION}\\\", \\\"pull_request\\\": \\\"${PULL_REQUEST}\\\"}\" "       
+      }
+    }
+  }
+}

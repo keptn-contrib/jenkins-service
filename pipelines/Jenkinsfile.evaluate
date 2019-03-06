@@ -1,0 +1,54 @@
+@Library('dynatrace@master') _
+
+
+def IMAGE_TAG = 'UNKNOWN'
+def PULL_REQUEST = 'UNKNOWN'
+def STABLE_TAG = 'UNKNOWN'
+
+pipeline {
+  parameters {
+    string(name: 'SERVICE', defaultValue: '', description: 'The name of the service to deploy.', trim: true)
+  }
+  agent {
+    label 'kubegit'
+  }
+  stages {
+    stage('Evaluate test') {
+      steps {
+        perfSigDynatraceReports(
+          envId: 'Dynatrace Tenant', 
+          nonFunctionalFailure: 1, 
+          specFile: "monspec/e2e_perfsig.json"
+        )
+      }
+    }
+    stage('Get artifact ID and promote deployment as passed') {
+      steps {
+        container('yq') {
+          sh "cd keptn-config/helm-chart && yq r values.yaml ${env.APP_NAME}Green.image.tag > image-tag.txt"
+          sh "cd keptn-config/helm-chart && yq r values.yaml ${env.APP_NAME}Green.image.repository > image-repository.txt"
+          script {
+            IMAGE_REPOSITORY = readFile('keptn-config/helm-chart/image-repository.txt').trim().toLowerCase()
+            IMAGE_TAG = readFile('keptn-config/helm-chart/image-tag.txt').trim()
+            PULL_REQUEST = IMAGE_REPOSITORY + ':' + IMAGE_TAG
+            STABLE_TAG = IMAGE_REPOSITORY + ':staging-stable'
+          }   
+        }
+        container('docker'){
+          sh "echo ${IMAGE_TAG}"
+          sh "echo ${STABLE_TAG}"
+          sh "docker pull ${IMAGE_REPOSITORY}:${IMAGE_TAG}"
+          sh "docker tag ${IMAGE_REPOSITORY}:${IMAGE_TAG} ${STABLE_TAG}"
+          sh "docker push ${STABLE_TAG}"
+        }
+      }
+    }
+  }
+  post {
+    always {
+      container("curl") {
+        sh "curl -X POST event-broker.keptn.35.239.5.164.xip.io -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"{ \\\"status\\\": \\\"success\\\", \\\"environment\\\": \\\"staging\\\", \\\"service\\\": \\\"${env.APP_NAME}\\\", \\\"github_org\\\": \\\"${env.GITHUB_ORGANIZATION}\\\", \\\"pull_request\\\": \\\"${PULL_REQUEST}\\\"}\" "       
+      }
+    }
+  }
+}
