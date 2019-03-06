@@ -15,7 +15,6 @@ pipeline {
     label 'kubegit'
   }
   stages {
-    /*
     stage('Evaluate test') {
       steps {
         perfSigDynatraceReports(
@@ -46,12 +45,11 @@ pipeline {
         }
       }
     }
-    */
   }
   post {
     always {
       container("curl") {
-                sh "curl -X POST event-broker.keptn.35.239.5.164.xip.io -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"{ \\\"status\\\": \\\"success\\\", \\\"environment\\\": \\\"${env.STAGE}\\\", \\\"service\\\": \\\"${env.SERVICE}\\\", \\\"project\\\": \\\"${env.PROJECT}\\\"}\" " 
+        sh "curl -X POST event-broker.keptn.35.239.5.164.xip.io -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"{ \\\"status\\\": \\\"success\\\", \\\"environment\\\": \\\"${env.STAGE}\\\", \\\"service\\\": \\\"${env.SERVICE}\\\", \\\"project\\\": \\\"${env.PROJECT}\\\"}\" " 
       }
     }
   }
