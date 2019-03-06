@@ -15,7 +15,7 @@ pipeline {
     label 'kubegit'
   }
   stages {
-/*
+    /*
     stage('Evaluate test') {
       steps {
         perfSigDynatraceReports(
@@ -46,7 +46,7 @@ pipeline {
         }
       }
     }
-*/
+    */
   }
   post {
     always {
