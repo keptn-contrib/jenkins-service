@@ -24,10 +24,11 @@ export class JenkinsService {
       jenkins.job.build({
         name: `/deploy`,
         parameters: {
-          GITHUB_ORG: deployment.gitHubOrg,
+          GITHUBORG: deployment.gitHubOrg,
           PROJECT: deployment.project,
           STAGE: deployment.stage,
           SERVICE: deployment.service,
+          IMAGE: deployment.image,
         },
       }, function(err) {
         if (err) console.log(err);
@@ -52,10 +53,11 @@ export class JenkinsService {
       jenkins.job.build({
         name: pipeline,
         parameters: {
-          GITHUB_ORG: deployment.gitHubOrg,
+          GITHUBORG: deployment.gitHubOrg,
           PROJECT: deployment.project,
           STAGE: deployment.stage,
           SERVICE: deployment.service,
+          IMAGE: deployment.image,
         },
       }, function(err) {
         if (err) console.log(err);
@@ -73,10 +75,11 @@ export class JenkinsService {
       jenkins.job.build({
         name: `/evaluate`,
         parameters: {
-          GITHUB_ORG: deployment.gitHubOrg,
+          GITHUBORG: deployment.gitHubOrg,
           PROJECT: deployment.project,
           STAGE: deployment.stage,
           SERVICE: deployment.service,
+          IMAGE: deployment.image,
         },
       }, function(err) {
         if (err) console.log(err);

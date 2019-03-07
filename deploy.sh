@@ -1,13 +1,7 @@
 #!/bin/sh
 REGISTRY_URI=$1
-
-# Deploy service
-rm -f config/service/gen/service.yaml
-
-cat config/service/service.yaml | \
-  sed 's~REGISTRY_URI_PLACEHOLDER~'"$REGISTRY_URI"'~' >> config/service/gen/service.yaml
-
-kubectl apply -f config/service/gen/service.yaml
+DT_TENANT_URL=$2
+DT_API_TOKEN=$3
 
 # Deploy Jenkins - see keptn/install/setupInfrastructure.sh:
 rm -f config/service/gen/k8s-jenkins-deployment.yml
@@ -22,6 +16,22 @@ cat config/jenkins/k8s-jenkins-deployment.yml | \
 kubectl create -f config/jenkins/k8s-jenkins-pvcs.yml 
 kubectl create -f config/service/gen/k8s-jenkins-deployment.yml
 kubectl create -f config/jenkins/k8s-jenkins-rbac.yml
+
+# Export Jenkins route in a variable
+export JENKINS_USER=$(cat creds.json | jq -r '.jenkinsUser')
+export JENKINS_PASSWORD=$(cat creds.json | jq -r '.jenkinsPassword')
+export JENKINS_URL=$(kubectl describe svc jenkins -n cicd | grep "LoadBalancer Ingress:" | sed 's~LoadBalancer Ingress:[ \t]*~~')
+
+# Create secret
+kubectl create secret generic -n keptn jenkins-secret --from-literal=jenkinsurl="$JENKINS_URL" --from-literal=user="$JENKINS_USER" --from-literal=password="$JENKINS_PASSWORD"
+
+# Deploy service
+rm -f config/service/gen/service.yaml
+
+cat config/service/service.yaml | \
+  sed 's~REGISTRY_URI_PLACEHOLDER~'"$REGISTRY_URI"'~' >> config/service/gen/service.yaml
+
+kubectl apply -f config/service/gen/service.yaml
 
 # Deploy Tiller for Helm
 kubectl -n kube-system create serviceaccount tiller

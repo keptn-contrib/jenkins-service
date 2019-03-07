@@ -33,8 +33,18 @@ spec:
             - name: JENKINS_URL
               valueFrom:
                 secretKeyRef:
-                  name: jenkinsurl
+                  name: jenkins-secret
                   key: jenkinsurl
+            - name: JENKINS_USER
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secret
+                  key: user
+            - name: JENKINS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secret
+                  key: password         
 ---
 
 # Subscription from the GcpPubSubSource's output Channel to the Knative Service below.

@@ -2,7 +2,7 @@
 
 pipeline {
   parameters {
-    string(name: 'GITHUB_ORG', defaultValue: '', description: 'The name of the GitHub organization.', trim: true)
+    string(name: 'GITHUBORG', defaultValue: '', description: 'The name of the GitHub organization.', trim: true)
     string(name: 'PROJECT', defaultValue: '', description: 'The name of the entire project.', trim: true)
     string(name: 'STAGE', defaultValue: '', description: 'The stage to deploy the service to.', trim: true)
     string(name: 'SERVICE', defaultValue: '', description: 'The name of the service to deploy.', trim: true)

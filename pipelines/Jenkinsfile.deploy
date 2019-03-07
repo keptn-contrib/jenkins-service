@@ -19,10 +19,11 @@ def STABLE_TAG = 'UNKNOWN'
 
 pipeline {
   parameters {
-    string(name: 'GITHUB_ORG', defaultValue: '', description: 'The name of the GitHub organization.', trim: true)
+    string(name: 'GITHUBORG', defaultValue: '', description: 'The name of the GitHub organization.', trim: true)
     string(name: 'PROJECT', defaultValue: '', description: 'The name of the entire project.', trim: true)
     string(name: 'STAGE', defaultValue: '', description: 'The stage to deploy the service to.', trim: true)
     string(name: 'SERVICE', defaultValue: '', description: 'The name of the service to deploy.', trim: true)
+    string(name: 'IMAGE', defaultValue: '', description: 'The image of the new service.', trim: true)
   }
   agent {
     label 'kubegit'
@@ -69,7 +70,18 @@ pipeline {
   post {
     always {
       container("curl") {
-        sh "curl -X POST event-broker.keptn.35.239.5.164.xip.io -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"{ \\\"status\\\": \\\"success\\\", \\\"githuborg\\\": \\\"${env.GITHUB_ORG}\\\", \\\"project\\\": \\\"${env.PROJECT}\\\", \\\"stage\\\": \\\"${env.STAGE}\\\", \\\"service\\\": \\\"${env.SERVICE}\\\"}\" "       
+        sendCloudEvent(
+          receiver: 'event-broker.keptn.svc.cluster.local',
+          type: 'sh.keptn.events.deployment-finished',
+          source: 'Jenkins', 
+          data: [
+            [key: 'gitHubOrg', value: "${env.GITHUBORG}"],
+            [key: 'project', value: "${env.PROJECT}"],
+            [key: 'stage', value: "${env.STAGE}"],
+            [key: 'service', value: "${env.SERVICE}"],
+            [key: 'image', value: "${env.IMAGE}"],
+          ]
+        )
       }
     }
   }

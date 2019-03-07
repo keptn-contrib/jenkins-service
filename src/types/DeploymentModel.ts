@@ -5,8 +5,9 @@ import { ApiModel, ApiModelProperty, SwaggerDefinitionConstant } from 'swagger-e
   name: 'DeploymentModel',
 })
 export class DeploymentModel {
-  service: string;
+  gitHubOrg: string;
   project: string;
   stage: string;
-  gitHubOrg: string;
+  service: string;
+  image: string;
 }
