@@ -8,5 +8,5 @@ export class DeploymentModel {
   service: string;
   project: string;
   stage: string;
-  githubOrg: string;
+  gitHubOrg: string;
 }

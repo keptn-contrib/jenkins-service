@@ -19,10 +19,10 @@ def STABLE_TAG = 'UNKNOWN'
 
 pipeline {
   parameters {
-    string(name: 'SERVICE', defaultValue: '', description: 'The name of the service to deploy.', trim: true)
+    string(name: 'GITHUB_ORG', defaultValue: '', description: 'The name of the GitHub organization.', trim: true)
     string(name: 'PROJECT', defaultValue: '', description: 'The name of the entire project.', trim: true)
     string(name: 'STAGE', defaultValue: '', description: 'The stage to deploy the service to.', trim: true)
-    string(name: 'GITHUB_ORG', defaultValue: '', description: 'The name of the GitHub organization.', trim: true)
+    string(name: 'SERVICE', defaultValue: '', description: 'The name of the service to deploy.', trim: true)
   }
   agent {
     label 'kubegit'
@@ -69,7 +69,7 @@ pipeline {
   post {
     always {
       container("curl") {
-        sh "curl -X POST event-broker.keptn.35.239.5.164.xip.io -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"{ \\\"status\\\": \\\"success\\\", \\\"environment\\\": \\\"${env.STAGE}\\\", \\\"service\\\": \\\"${env.SERVICE}\\\", \\\"github_org\\\": \\\"${env.GITHUB_ORG}\\\"}\" "       
+        sh "curl -X POST event-broker.keptn.35.239.5.164.xip.io -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"{ \\\"status\\\": \\\"success\\\", \\\"githuborg\\\": \\\"${env.GITHUB_ORG}\\\", \\\"project\\\": \\\"${env.PROJECT}\\\", \\\"stage\\\": \\\"${env.STAGE}\\\", \\\"service\\\": \\\"${env.SERVICE}\\\"}\" "       
       }
     }
   }
