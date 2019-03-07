@@ -56,17 +56,17 @@ export class JenkinsController implements interfaces.Controller {
       const cloudEvent : CloudEvent = request.body;
       const jenkinsSvc : JenkinsService = await JenkinsService.getInstance();
 
-      if (request.body.eventType == 'start.deployment') {
+      if (request.body.eventType == 'sh.keptn.events.configuration-changed') {
         await jenkinsSvc.deployService(cloudEvent.data);
 
-      } else if (request.body.eventType == 'start.tests') {
+      } else if (request.body.eventType == 'sh.keptn.events.deployment-finished') {
         await jenkinsSvc.startTests(cloudEvent.data);
 
-      } else if (request.body.eventType == 'start.evaluation') {
+      } else if (request.body.eventType == 'sh.keptn.events.tests-finished') {
         await jenkinsSvc.evaluateTests(cloudEvent.data);
 
       } else {
-        console.log('[jenkins]: Event type unknown.');
+        console.log(`[jenkins]: This service does not handle the event type ${request.body.eventType}.`);
       }
     }
 
