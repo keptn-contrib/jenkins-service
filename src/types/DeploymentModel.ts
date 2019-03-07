@@ -10,4 +10,5 @@ export class DeploymentModel {
   stage: string;
   service: string;
   image: string;
+  tag: string;
 }

@@ -24,6 +24,7 @@ pipeline {
     string(name: 'STAGE', defaultValue: '', description: 'The stage to deploy the service to.', trim: true)
     string(name: 'SERVICE', defaultValue: '', description: 'The name of the service to deploy.', trim: true)
     string(name: 'IMAGE', defaultValue: '', description: 'The image of the new service.', trim: true)
+    string(name: 'TAG', defaultValue: '', description: 'The tag of the new service.', trim: true)
   }
   agent {
     label 'kubegit'
@@ -80,6 +81,7 @@ pipeline {
             [key: 'stage', value: "${env.STAGE}"],
             [key: 'service', value: "${env.SERVICE}"],
             [key: 'image', value: "${env.IMAGE}"],
+            [key: 'tag', value: "${env.TAG}"]
           ]
         )
       }

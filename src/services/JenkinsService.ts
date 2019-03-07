@@ -29,6 +29,7 @@ export class JenkinsService {
           STAGE: deployment.stage,
           SERVICE: deployment.service,
           IMAGE: deployment.image,
+          TAG: deployment.tag,
         },
       }, function(err) {
         if (err) console.log(err);
@@ -58,6 +59,7 @@ export class JenkinsService {
           STAGE: deployment.stage,
           SERVICE: deployment.service,
           IMAGE: deployment.image,
+          TAG: deployment.tag,
         },
       }, function(err) {
         if (err) console.log(err);
@@ -80,6 +82,7 @@ export class JenkinsService {
           STAGE: deployment.stage,
           SERVICE: deployment.service,
           IMAGE: deployment.image,
+          TAG: deployment.tag,
         },
       }, function(err) {
         if (err) console.log(err);
