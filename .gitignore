@@ -1,5 +1,8 @@
 # Auto-generated files
 config/service/gen/service.yaml
+config/jenkins/gen/k8s-jenkins-deployment.yml
+
+creds.json
 
 # nyc output
 .nyc_output

@@ -3,7 +3,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: jenkins
-  namespace: cicd
+  namespace: keptn
 spec:
   type: LoadBalancer
   ports:
@@ -22,7 +22,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: jenkins-deployment
-  namespace: cicd
+  namespace: keptn
 spec:
   replicas: 1
   selector:

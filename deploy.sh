@@ -1,7 +1,13 @@
 #!/bin/sh
 REGISTRY_URI=$1
-DT_TENANT_URL=$2
-DT_API_TOKEN=$3
+
+export JENKINS_USER=$(cat creds.json | jq -r '.jenkinsUser')
+export JENKINS_PASSWORD=$(cat creds.json | jq -r '.jenkinsPassword')
+export GITHUB_USER_EMAIL=$(cat creds.json | jq -r '.githubUserEmail')
+export GITHUB_ORGANIZATION=$(cat creds.json | jq -r '.githubOrg')
+export DT_TENANT_ID=$(cat creds.json | jq -r '.dynatraceTenant')
+export DT_API_TOKEN=$(cat creds.json | jq -r '.dynatraceApiToken')
+export DT_TENANT_URL="$DT_TENANT_ID.live.dynatrace.com"
 
 # Deploy Jenkins - see keptn/install/setupInfrastructure.sh:
 rm -f config/service/gen/k8s-jenkins-deployment.yml
@@ -14,12 +20,10 @@ cat config/jenkins/k8s-jenkins-deployment.yml | \
   sed 's~DT_API_TOKEN_PLACEHOLDER~'"$DT_API_TOKEN"'~' >> config/service/gen/k8s-jenkins-deployment.yml
 
 kubectl create -f config/jenkins/k8s-jenkins-pvcs.yml 
-kubectl create -f config/service/gen/k8s-jenkins-deployment.yml
+kubectl create -f config/jenkins/gen/k8s-jenkins-deployment.yml
 kubectl create -f config/jenkins/k8s-jenkins-rbac.yml
 
 # Export Jenkins route in a variable
-export JENKINS_USER=$(cat creds.json | jq -r '.jenkinsUser')
-export JENKINS_PASSWORD=$(cat creds.json | jq -r '.jenkinsPassword')
 export JENKINS_URL=$(kubectl describe svc jenkins -n cicd | grep "LoadBalancer Ingress:" | sed 's~LoadBalancer Ingress:[ \t]*~~')
 
 # Create secret

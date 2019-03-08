@@ -52,8 +52,6 @@ export class JenkinsController implements interfaces.Controller {
     next: express.NextFunction,
   ): Promise<void> {
 
-    console.log('trigger job');
-
     if (request.body.type) {
       const cloudEvent : CloudEvent = request.body;
       const jenkinsSvc : JenkinsService = await JenkinsService.getInstance();
@@ -61,16 +59,20 @@ export class JenkinsController implements interfaces.Controller {
       if (request.body.type == 'sh.keptn.events.configuration-changed') {
 
         console.log('[jenkins-service]: Trigger service deployment.');
-
         await jenkinsSvc.deployService(cloudEvent.data);
-
         console.log('[jenkins-service]: Service deployment triggered.');
 
       } else if (request.body.type == 'sh.keptn.events.deployment-finished') {
+
+        console.log('[jenkins-service]: Trigger service testing.');
         await jenkinsSvc.startTests(cloudEvent.data);
+        console.log('[jenkins-service]: Tests triggered.');
 
       } else if (request.body.type == 'sh.keptn.events.tests-finished') {
+
+        console.log('[jenkins-service]: Trigger test evaluation.');
         await jenkinsSvc.evaluateTests(cloudEvent.data);
+        console.log('[jenkins-service]: Evaluation triggered.');
 
       } else {
         console.log(`[jenkins]: This service does not handle the event type ${request.body.type}.`);
