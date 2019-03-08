@@ -1,3 +1,39 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: jenkins-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: jenkins-destination
+spec:
+  host: jenkins.keptn.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: jenkins
+spec:
+  hosts:
+  - "jenkins.keptn.35.239.90.1.xip.io"
+  - "jenkins.keptn.svc.cluster.local"
+  gateways:
+  - jenkins-gateway
+  http:
+  - route:
+    - destination:
+        host: jenkins.keptn.svc.cluster.local
 ---
 kind: Service
 apiVersion: v1
@@ -5,12 +41,10 @@ metadata:
   name: jenkins
   namespace: keptn
 spec:
-  type: LoadBalancer
   ports:
   - name: http
-    port: 24711
+    port: 80
     targetPort: 8080
-    protocol: TCP
   - name: jnlp
     port: 50000
     targetPort: 50000
