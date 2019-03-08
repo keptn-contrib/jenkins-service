@@ -52,7 +52,19 @@ pipeline {
   post {
     always {
       container("curl") {
-        sh "curl -X POST event-broker.keptn.35.239.5.164.xip.io -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"{ \\\"status\\\": \\\"success\\\", \\\"githuborg\\\": \\\"${env.GITHUB_ORG}\\\", \\\"project\\\": \\\"${env.PROJECT}\\\", \\\"stage\\\": \\\"${env.STAGE}\\\", \\\"service\\\": \\\"${env.SERVICE}\\\"}\" "       
+        sendCloudEvent(
+          receiver: 'event-broker.keptn.svc.cluster.local/keptn',
+          type: 'sh.keptn.events.new-artifact',
+          source: 'Jenkins', 
+          data: [
+            [key: 'gitHubOrg', value: "${env.GITHUBORG}"],
+            [key: 'project', value: "${env.PROJECT}"],
+            [key: 'stage', value: "${env.STAGE}"],
+            [key: 'service', value: "${env.SERVICE}"],
+            [key: 'image', value: "${env.IMAGE}"],
+            [key: 'tag', value: "${env.TAG}"]
+          ]
+        )
       }
     }
   }

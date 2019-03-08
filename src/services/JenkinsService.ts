@@ -48,24 +48,28 @@ export class JenkinsService {
       pipeline = '/test.dev';
     } else if (deployment.stage === 'staging') {
       pipeline = '/test.staging';
+    } else {
+      //TODO
     }
 
-    new Promise(resolve => {
-      jenkins.job.build({
-        name: pipeline,
-        parameters: {
-          GITHUBORG: deployment.gitHubOrg,
-          PROJECT: deployment.project,
-          STAGE: deployment.stage,
-          SERVICE: deployment.service,
-          IMAGE: deployment.image,
-          TAG: deployment.tag,
-        },
-      }, function(err) {
-        if (err) console.log(err);
-        resolve();
+    if (pipeline !== '') {
+      new Promise(resolve => {
+        jenkins.job.build({
+          name: pipeline,
+          parameters: {
+            GITHUBORG: deployment.gitHubOrg,
+            PROJECT: deployment.project,
+            STAGE: deployment.stage,
+            SERVICE: deployment.service,
+            IMAGE: deployment.image,
+            TAG: deployment.tag,
+          },
+        }, function(err) {
+          if (err) console.log(err);
+          resolve();
+        });
       });
-    });
+    }
 
     return started;
   }
