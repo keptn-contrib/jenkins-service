@@ -1,7 +1,7 @@
 import { DeploymentModel } from '../types/DeploymentModel';
 
 //const jenkins = require('jenkins')({ baseUrl: process.env.JENKINS_URL });
-const jenkins = require('jenkins')({ baseUrl: 'http://admin:AiTx4u8VyUV8tCKk@35.232.216.57:24711' });
+const jenkins = require('jenkins')({ baseUrl: 'http://admin:AiTx4u8VyUV8tCKk@jenkins.keptn.svc.cluster.local' });
 
 export class JenkinsService {
 
