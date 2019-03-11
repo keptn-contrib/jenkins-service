@@ -24,7 +24,7 @@ export class JenkinsService {
       jenkins.job.build({
         name: `/deploy`,
         parameters: {
-          GITHUBORG: deployment.gitHubOrg,
+          GITHUBORG: deployment.githuborg,
           PROJECT: deployment.project,
           STAGE: deployment.stage,
           SERVICE: deployment.service,
@@ -57,7 +57,7 @@ export class JenkinsService {
         jenkins.job.build({
           name: pipeline,
           parameters: {
-            GITHUBORG: deployment.gitHubOrg,
+            GITHUBORG: deployment.githuborg,
             PROJECT: deployment.project,
             STAGE: deployment.stage,
             SERVICE: deployment.service,
@@ -81,7 +81,7 @@ export class JenkinsService {
       jenkins.job.build({
         name: `/evaluate`,
         parameters: {
-          GITHUBORG: deployment.gitHubOrg,
+          GITHUBORG: deployment.githuborg,
           PROJECT: deployment.project,
           STAGE: deployment.stage,
           SERVICE: deployment.service,
