@@ -1,22 +1,5 @@
 @Library('dynatrace@master') _
 
-def tagMatchRules = [
-  [
-    meTypes: [
-      [meType: 'SERVICE']
-    ],
-    tags : [
-      [context: 'CONTEXTLESS', key: 'service', value: ''],
-      [context: 'CONTEXTLESS', key: 'application', value: ''],
-      [context: 'CONTEXTLESS', key: 'environment', value: 'staging']
-    ]
-  ]
-]
-
-def IMAGE_TAG = 'UNKNOWN'
-def PULL_REQUEST = 'UNKNOWN'
-def STABLE_TAG = 'UNKNOWN'
-
 pipeline {
   parameters {
     string(name: 'GITHUBORG', defaultValue: '', description: 'The name of the GitHub organization.', trim: true)
@@ -30,14 +13,38 @@ pipeline {
     label 'kubegit'
   }
   stages {
-    stage('Run functional check in dev') {
+    stage('Run health check') {
+      steps {
+        container('jmeter') {
+          script {
+            def status = executeJMeter ( 
+              scriptName: 'jmeter/basiccheck.jmx', 
+              resultsDir: "HealthCheck_${env.SERVICE}",
+              serverUrl: "${env.SERVICE}.${env.STAGE}", 
+              serverPort: 80,
+              checkPath: '/health',
+              vuCount: 1,
+              loopCount: 1,
+              LTN: "HealthCheck_${BUILD_NUMBER}",
+              funcValidation: true,
+              avgRtValidation: 0
+            )
+            if (status != 0) {
+              currentBuild.result = 'FAILED'
+              error "Health check in dev failed."
+            }
+          }
+        }
+      }
+    }
+    stage('Run functional check') {
       steps {
         container('jmeter') {
           script {
             def status = executeJMeter (
               scriptName: "jmeter/${env.SERVICE}_load.jmx", 
               resultsDir: "FuncCheck_${env.SERVICE}",
-              serverUrl: "${env.SERVICE}.dev", 
+              serverUrl: "${env.SERVICE}.${env.STAGE}", 
               serverPort: 80,
               checkPath: '/health',
               vuCount: 1,
@@ -48,7 +55,7 @@ pipeline {
             )
             if (status != 0) {
               currentBuild.result = 'FAILED'
-              error "Functional check in dev failed."
+              error "Functional check failed."
             }
           }
         }

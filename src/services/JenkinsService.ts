@@ -45,14 +45,14 @@ export class JenkinsService {
     let pipeline : string = '';
 
     if (deployment.stage === 'dev') {
-      pipeline = '/test.dev';
+      pipeline = '/test.functional';
     } else if (deployment.stage === 'staging') {
-      pipeline = '/test.staging';
+      pipeline = '/test.performance';
     } else {
-      //TODO
+      pipeline = 'notest';
     }
 
-    if (pipeline !== '') {
+    if (pipeline === 'notest') {
       new Promise(resolve => {
         jenkins.job.build({
           name: pipeline,
