@@ -66,8 +66,8 @@ pipeline {
       steps {
         container('helm') {
           sh "helm init --client-only"
-          sh "cd keptn-config && helm dep update helm-chart/"
-          sh "cd keptn-config && helm upgrade --install ${env.GITHUBORG}-${env.STAGE} ./helm-chart --namespace ${env.STAGE}"
+          sh "cd ${env.PROJECT} && helm dep update helm-chart/"
+          sh "cd ${env.PROJECT} && helm upgrade --install ${env.GITHUBORG}-${env.STAGE} ./helm-chart --namespace ${env.STAGE}"
         }
       }
     }
