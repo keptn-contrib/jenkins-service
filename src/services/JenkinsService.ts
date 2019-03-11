@@ -51,7 +51,7 @@ export class JenkinsService {
     } else {
       pipeline = 'notest';
     }
-    console.log(pipeline);
+
     if (pipeline !== 'notest') {
       new Promise(resolve => {
         jenkins.job.build({
