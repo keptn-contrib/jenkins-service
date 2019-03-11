@@ -45,7 +45,7 @@ export class JenkinsService {
     let pipeline : string = '';
 
     if (deployment.stage === 'dev') {
-      pipeline = '/test.functional';
+      pipeline = '/deploy';
     } else if (deployment.stage === 'staging') {
       pipeline = '/test.performance';
     } else {
