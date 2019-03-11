@@ -51,8 +51,8 @@ export class JenkinsService {
         parameters: {
           GITHUBORG: deployment.githuborg,
           PROJECT: deployment.project,
-          TESTSTRATEGY: deployment.teststategy;
-          DEPLOYMENTSTRATEGY: deployment.deploymentstrategy;
+          TESTSTRATEGY: deployment.teststategy,
+          DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
           STAGE: deployment.stage,
           SERVICE: deployment.service,
           IMAGE: deployment.image,
@@ -76,8 +76,8 @@ export class JenkinsService {
         parameters: {
           GITHUBORG: deployment.githuborg,
           PROJECT: deployment.project,
-          TESTSTRATEGY: deployment.teststategy;
-          DEPLOYMENTSTRATEGY: deployment.deploymentstrategy;
+          TESTSTRATEGY: deployment.teststategy,
+          DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
           STAGE: deployment.stage,
           SERVICE: deployment.service,
           IMAGE: deployment.image,
