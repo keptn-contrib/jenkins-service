@@ -70,7 +70,7 @@ pipeline {
           type: 'sh.keptn.events.tests-finished',
           source: 'Jenkins', 
           data: [
-            [key: 'gitHubOrg', value: "${env.GITHUBORG}"],
+            [key: 'githuborg', value: "${env.GITHUBORG}"],
             [key: 'project', value: "${env.PROJECT}"],
             [key: 'stage', value: "${env.STAGE}"],
             [key: 'service', value: "${env.SERVICE}"],
