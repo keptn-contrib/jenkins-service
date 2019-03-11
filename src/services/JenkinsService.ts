@@ -26,6 +26,8 @@ export class JenkinsService {
         parameters: {
           GITHUBORG: deployment.githuborg,
           PROJECT: deployment.project,
+          TESTSTRATEGY: deployment.teststategy,
+          DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
           STAGE: deployment.stage,
           SERVICE: deployment.service,
           IMAGE: deployment.image,
@@ -42,36 +44,25 @@ export class JenkinsService {
 
   async startTests(deployment: DeploymentModel) : Promise<boolean> {
     let started: boolean = false;
-    let pipeline : string = '';
 
-    if (deployment.stage === 'dev') {
-      pipeline = '/test.functional';
-    } else if (deployment.stage === 'staging') {
-      pipeline = '/test.performance';
-    } else {
-      pipeline = 'notest';
-    }
-
-    console.log(pipeline);
-
-    if (pipeline !== 'notest') {
-      new Promise(resolve => {
-        jenkins.job.build({
-          name: pipeline,
-          parameters: {
-            GITHUBORG: deployment.githuborg,
-            PROJECT: deployment.project,
-            STAGE: deployment.stage,
-            SERVICE: deployment.service,
-            IMAGE: deployment.image,
-            TAG: deployment.tag,
-          },
-        }, function(err) {
-          if (err) console.log(err);
-          resolve();
-        });
+    new Promise(resolve => {
+      jenkins.job.build({
+        name: `/test`,
+        parameters: {
+          GITHUBORG: deployment.githuborg,
+          PROJECT: deployment.project,
+          TESTSTRATEGY: deployment.teststategy;
+          DEPLOYMENTSTRATEGY: deployment.deploymentstrategy;
+          STAGE: deployment.stage,
+          SERVICE: deployment.service,
+          IMAGE: deployment.image,
+          TAG: deployment.tag,
+        },
+      }, function(err) {
+        if (err) console.log(err);
+        resolve();
       });
-    }
+    });
 
     return started;
   }
@@ -85,6 +76,8 @@ export class JenkinsService {
         parameters: {
           GITHUBORG: deployment.githuborg,
           PROJECT: deployment.project,
+          TESTSTRATEGY: deployment.teststategy;
+          DEPLOYMENTSTRATEGY: deployment.deploymentstrategy;
           STAGE: deployment.stage,
           SERVICE: deployment.service,
           IMAGE: deployment.image,

@@ -59,6 +59,8 @@ pipeline {
           data: [
             [key: 'githuborg', value: "${env.GITHUBORG}"],
             [key: 'project', value: "${env.PROJECT}"],
+            [key: 'teststategy', value: "${env.TESTSTRATEGY}"],
+            [key: 'deploymentstrategy', value: "${env.DEPLOYMENTSTRATEGY}"],
             [key: 'stage', value: "${env.STAGE}"],
             [key: 'service', value: "${env.SERVICE}"],
             [key: 'image', value: "${env.IMAGE}"],
