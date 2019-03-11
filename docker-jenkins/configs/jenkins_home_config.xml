@@ -772,8 +772,8 @@
       <skipTlsVerify>false</skipTlsVerify>
       <addMasterProxyEnvVars>false</addMasterProxyEnvVars>
       <capOnlyOnAlivePods>false</capOnlyOnAlivePods>
-      <namespace>cicd</namespace>
-      <jenkinsUrl>http://jenkins:24711</jenkinsUrl>
+      <namespace>keptn</namespace>
+      <jenkinsUrl>http://jenkins.keptn.svc.cluster.local:80</jenkinsUrl>
       <containerCap>10</containerCap>
       <retentionTimeout>5</retentionTimeout>
       <connectTimeout>0</connectTimeout>
