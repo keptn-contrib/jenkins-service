@@ -1,7 +1,7 @@
 FROM openjdk:8-jdk
 
 RUN apt-get update && apt-get install -y git curl gosu && rm -rf /var/lib/apt/lists/*
-RUN echo "building jenkins!"
+RUN echo "Building jenkins."
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000

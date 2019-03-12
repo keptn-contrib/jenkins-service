@@ -26,7 +26,7 @@ metadata:
   name: jenkins
 spec:
   hosts:
-  - "jenkins.keptn.35.239.90.1.xip.io"
+  - "jenkins.keptn.GATEWAY_PLACEHOLDER.xip.io"
   - "jenkins.keptn.svc.cluster.local"
   gateways:
   - jenkins-gateway
@@ -69,7 +69,7 @@ spec:
     spec:
       containers:
       - name: jenkins
-        image: keptn/jenkins:0.2
+        image: keptn/jenkins:0.3-rc
         imagePullPolicy: Always
         env:
           - name: GITHUB_USER_EMAIL
