@@ -45,24 +45,26 @@ export class JenkinsService {
   async startTests(deployment: DeploymentModel) : Promise<boolean> {
     let started: boolean = false;
 
-    new Promise(resolve => {
-      jenkins.job.build({
-        name: `/test`,
-        parameters: {
-          GITHUBORG: deployment.githuborg,
-          PROJECT: deployment.project,
-          TESTSTRATEGY: deployment.teststategy,
-          DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
-          STAGE: deployment.stage,
-          SERVICE: deployment.service,
-          IMAGE: deployment.image,
-          TAG: deployment.tag,
-        },
-      }, function(err) {
-        if (err) console.log(err);
-        resolve();
+    if (deployment.teststategy !== '') {
+      new Promise(resolve => {
+        jenkins.job.build({
+          name: `/test`,
+          parameters: {
+            GITHUBORG: deployment.githuborg,
+            PROJECT: deployment.project,
+            TESTSTRATEGY: deployment.teststategy,
+            DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
+            STAGE: deployment.stage,
+            SERVICE: deployment.service,
+            IMAGE: deployment.image,
+            TAG: deployment.tag,
+          },
+        }, function(err) {
+          if (err) console.log(err);
+          resolve();
+        });
       });
-    });
+    }
 
     return started;
   }

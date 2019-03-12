@@ -38,7 +38,7 @@ pipeline {
           withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
             sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUBORG}/${env.PROJECT}"
-            sh "cd ${env.PROJECT} && git checkout ${env.STAGE} && ls"
+            sh "cd ${env.PROJECT} && git checkout ${env.STAGE}"
           }
         }
       }
