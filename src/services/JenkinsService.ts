@@ -64,6 +64,9 @@ export class JenkinsService {
           resolve();
         });
       });
+      console.log('[jenkins-service]: Tests triggered.');
+    } else {
+      console.log('[jenkins-service]: No test triggered because no test strategy defined.');
     }
 
     return started;

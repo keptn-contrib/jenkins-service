@@ -66,7 +66,6 @@ export class JenkinsController implements interfaces.Controller {
 
         console.log('[jenkins-service]: Trigger service testing.');
         await jenkinsSvc.startTests(cloudEvent.data);
-        console.log('[jenkins-service]: Tests triggered.');
 
       } else if (request.body.type == 'sh.keptn.events.tests-finished') {
 
