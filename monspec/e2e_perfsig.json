@@ -1,0 +1,20 @@
+{
+    "_lowerLimit" : 0.0,
+    "_upperLimit" : 1000.0,
+    "timeseries" : [
+        {
+            "timeseriesId" : "com.dynatrace.builtin:service.responsetime",
+            "aggregation" : "avg",
+            "tags" : "service:sockshop-carts,environment:stagingx",
+            "upperLimit" : 800.0,
+            "lowerLimit" : 600.0
+        },
+        {
+            "timeseriesId" : "com.dynatrace.builtin:service.failurerate",
+            "aggregation" : "avg",
+            "tags" : "service:sockshop-carts,environment:stagingx",
+            "upperLimit" : 5.0,
+            "lowerLimit" : 0.0
+        }
+    ]
+}

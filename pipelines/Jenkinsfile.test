@@ -79,7 +79,7 @@ pipeline {
           script {
             def status = executeJMeter (
               scriptName: "jmeter/${env.SERVICE}_load.jmx", 
-              resultsDir: "PerfCheck_${env.SERVICE}",
+              resultsDir: "PerfCheck_${BUILD_NUMBER}_${env.SERVICE}",
               serverUrl: "${env.SERVICE}.dev", 
               serverPort: 80,
               checkPath: '/health',
