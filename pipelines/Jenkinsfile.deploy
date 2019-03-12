@@ -36,7 +36,7 @@ pipeline {
       steps {
         container('git') {
           withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-            sh "rm -r ${env.PROJECT}"
+            sh "rm -rf ${env.PROJECT}"
             sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
             sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUBORG}/${env.PROJECT}"
             sh "cd ${env.PROJECT} && git checkout ${env.STAGE}"
