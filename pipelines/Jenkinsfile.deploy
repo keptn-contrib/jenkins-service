@@ -7,7 +7,6 @@ def tagMatchRules = [
     ],
     tags : [
       [context: 'CONTEXTLESS', key: 'service', value: ''],
-      [context: 'CONTEXTLESS', key: 'application', value: ''],
       [context: 'CONTEXTLESS', key: 'environment', value: '']
     ]
   ]
@@ -77,8 +76,7 @@ pipeline {
         container("curl") {
           script {
             tagMatchRules[0].tags[0].value = "${env.SERVICE}"
-            tagMatchRules[0].tags[1].value = "${env.PROJECT}"
-            tagMatchRules[0].tags[2].value = "${env.STAGE}"
+            tagMatchRules[0].tags[1].value = "${env.STAGE}"
             def status = pushDynatraceDeploymentEvent (
               tagRule : tagMatchRules,
               customProperties : [
