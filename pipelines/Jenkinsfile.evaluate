@@ -1,6 +1,5 @@
 @Library('dynatrace@master') _
 
-
 def IMAGE_TAG = 'UNKNOWN'
 def PULL_REQUEST = 'UNKNOWN'
 def STABLE_TAG = 'UNKNOWN'
@@ -20,12 +19,25 @@ pipeline {
     label 'kubegit'
   }
   stages {
+    stage('Checkout monspec') {
+      steps {
+        container('git') {
+          withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+            sh "rm -rf ${env.SERVICE}"
+            sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
+            sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUBORG}/${env.SERVICE}"
+            sh "sed 's~ENV_PLACEHOLDER~'"${env.STAGE}"'~' ${env.SERVICE}/monspec/perfsig.json"
+            sh "cat ${env.SERVICE}/monspec/perfsig.json"
+          }
+        }
+      }
+    }
     stage('Evaluate test') {
       steps {
         perfSigDynatraceReports(
           envId: 'Dynatrace Tenant', 
           nonFunctionalFailure: 1, 
-          specFile: "monspec/e2e_perfsig.json"
+          specFile: "monspec/${env.SERVICE}_perfsig.json"
         )
       }
     }
