@@ -24,7 +24,7 @@ spec:
             name: kaniko
             arguments:
               - name: IMAGE
-                value: docker-registry.cicd.svc.cluster.local:5000/keptn/jenkins-service:latest
+                value: docker-registry.keptn.svc.cluster.local:5000/keptn/jenkins-service:latest
       revisionTemplate:
         metadata:
           annotations:

@@ -1,13 +1,12 @@
 #!/bin/sh
 REGISTRY_URI=$1
-
-export JENKINS_USER=$(cat creds.json | jq -r '.jenkinsUser')
-export JENKINS_PASSWORD=$(cat creds.json | jq -r '.jenkinsPassword')
-export GITHUB_USER_EMAIL=$(cat creds.json | jq -r '.githubUserEmail')
-export GITHUB_ORGANIZATION=$(cat creds.json | jq -r '.githubOrg')
-export DT_TENANT_ID=$(cat creds.json | jq -r '.dynatraceTenant')
-export DT_API_TOKEN=$(cat creds.json | jq -r '.dynatraceApiToken')
-export DT_TENANT_URL="$DT_TENANT_ID.live.dynatrace.com"
+JENKINS_USER=$2
+JENKINS_PASSWORD=$3
+GITHUB_USER_EMAIL=$4
+GITHUB_ORGANIZATION=$5
+DT_TENANT_ID=$6
+DT_API_TOKEN=$7
+DT_TENANT_URL=$8
 
 # Deploy Jenkins - see keptn/install/setupInfrastructure.sh:
 rm -f config/jenkins/gen/k8s-jenkins-deployment.yml
@@ -20,7 +19,7 @@ cat config/jenkins/k8s-jenkins-deployment.yml | \
   sed 's~GITHUB_ORGANIZATION_PLACEHOLDER~'"$GITHUB_ORGANIZATION"'~' | \
   sed 's~DOCKER_REGISTRY_IP_PLACEHOLDER~'"$REGISTRY_URL"'~' | \
   sed 's~DT_TENANT_URL_PLACEHOLDER~'"$DT_TENANT_URL"'~' | \
-  sed 's~DT_API_TOKEN_PLACEHOLDER~'"$DT_API_TOKEN"'~' >> ../manifests/gen/k8s-jenkins-deployment.yml
+  sed 's~DT_API_TOKEN_PLACEHOLDER~'"$DT_API_TOKEN"'~' >> config/jenkins/gen/k8s-jenkins-deployment.yml
 
 kubectl create -f config/jenkins/k8s-jenkins-pvcs.yml 
 kubectl create -f config/jenkins/gen/k8s-jenkins-deployment.yml
@@ -36,7 +35,7 @@ echo "Setup Credentials in Jenkins "
 echo "--------------------------"
 
 # Export Jenkins route in a variable
-export JENKINS_URL="jenkins.keptn.'$GATEWAY'.xip.io"
+export JENKINS_URL="jenkins.keptn.$GATEWAY.xip.io"
 
 curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
 --data-urlencode 'json={
@@ -75,6 +74,7 @@ rm -f config/service/gen/service.yaml
 cat config/service/service.yaml | \
   sed 's~REGISTRY_URI_PLACEHOLDER~'"$REGISTRY_URI"'~' >> config/service/gen/service.yaml
 
+kubectl delete -f config/service/gen/service.yaml
 kubectl apply -f config/service/gen/service.yaml
 
 # Deploy Tiller for Helm
