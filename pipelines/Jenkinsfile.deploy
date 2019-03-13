@@ -32,7 +32,7 @@ pipeline {
     label 'kubegit'
   }
   stages {
-    stage('Check out Configuration') {
+    stage('Checkout configuration') {
       steps {
         container('git') {
           withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
@@ -44,7 +44,7 @@ pipeline {
         }
       }
     }
-    stage('Deploy Service - direct') {
+    stage('Deploy service - direct') {
       when {
         expression {
           return env.DEPLOYMENTSTRATEGY ==~ 'direct' 
@@ -58,7 +58,7 @@ pipeline {
         }
       }
     }
-    stage('Deploy Service - blue/green') {
+    stage('Deploy service - blue/green') {
       when {
         expression {
           return env.DEPLOYMENTSTRATEGY ==~ 'blue_green_service' 
@@ -72,7 +72,7 @@ pipeline {
         }
       }
     }
-    stage('DT Deploy Event') {
+    stage('DT deploy event') {
       steps {
         container("curl") {
           script {

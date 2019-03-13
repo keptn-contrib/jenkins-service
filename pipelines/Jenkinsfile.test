@@ -15,7 +15,7 @@ pipeline {
     label 'kubegit'
   }
   stages {
-    stage('Check out Test Driver') {
+    stage('Checkout test driver') {
       steps {
         container('git') {
           withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
@@ -29,10 +29,12 @@ pipeline {
     stage('Run health check') {
       steps {
         container('jmeter') {
+          sh "rm -rf HealthCheck_${env.SERVICE}"
+
           script {
             def status = executeJMeter ( 
               scriptName: "${env.SERVICE}/jmeter/basiccheck.jmx", 
-              resultsDir: "HealthCheck_${BUILD_NUMBER}_${env.SERVICE}",
+              resultsDir: "HealthCheck_${env.SERVICE}",
               serverUrl: "${env.SERVICE}.${env.STAGE}", 
               serverPort: 80,
               checkPath: '/health',
@@ -58,10 +60,12 @@ pipeline {
       }
       steps {
         container('jmeter') {
+          sh "rm -rf FuncCheck_${env.SERVICE}"
+
           script {
             def status = executeJMeter (
               scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_load.jmx", 
-              resultsDir: "FuncCheck_${BUILD_NUMBER}_${env.SERVICE}",
+              resultsDir: "FuncCheck_${env.SERVICE}",
               serverUrl: "${env.SERVICE}.${env.STAGE}", 
               serverPort: 80,
               checkPath: '/health',
@@ -87,10 +91,12 @@ pipeline {
       }
       steps {
         container('jmeter') {
+          sh "rm -rf PerfCheck_${env.SERVICE}"
+
           script {
             def status = executeJMeter (
               scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_load.jmx", 
-              resultsDir: "PerfCheck_${BUILD_NUMBER}_${env.SERVICE}",
+              resultsDir: "PerfCheck_${env.SERVICE}",
               serverUrl: "${env.SERVICE}.${env.STAGE}", 
               serverPort: 80,
               checkPath: '/health',
