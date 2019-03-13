@@ -20,6 +20,11 @@ pipeline {
   }
   stages {
     stage('Checkout monspec') {
+      when {
+        expression {
+          return env.TESTSTRATEGY ==~ 'performance' 
+        }
+      }
       steps {
         container('git') {
           withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
@@ -27,40 +32,22 @@ pipeline {
             sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
             sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUBORG}/${env.SERVICE}"
             sh "sed -i \"s#ENV_PLACEHOLDER#${env.STAGE}#\" ${env.SERVICE}/monspec/${env.SERVICE}_perfsig.json"
-            
-            sh "cat ${env.SERVICE}/monspec/${env.SERVICE}_perfsig.json"
           }
         }
       }
     }
     stage('Evaluate test') {
+      when {
+        expression {
+          return env.TESTSTRATEGY ==~ 'performance' 
+        }
+      }
       steps {
         perfSigDynatraceReports(
           envId: 'Dynatrace Tenant', 
           nonFunctionalFailure: 1, 
           specFile: "${env.SERVICE}/monspec/${env.SERVICE}_perfsig.json"
         )
-      }
-    }
-    stage('Get artifact ID and promote deployment as passed') {
-      steps {
-        container('yq') {
-          sh "cd keptn-config/helm-chart && yq r values.yaml ${env.SERVICE}Green.image.tag > image-tag.txt"
-          sh "cd keptn-config/helm-chart && yq r values.yaml ${env.SERVICE}Green.image.repository > image-repository.txt"
-          script {
-            IMAGE_REPOSITORY = readFile('keptn-config/helm-chart/image-repository.txt').trim().toLowerCase()
-            IMAGE_TAG = readFile('keptn-config/helm-chart/image-tag.txt').trim()
-            PULL_REQUEST = IMAGE_REPOSITORY + ':' + IMAGE_TAG
-            STABLE_TAG = IMAGE_REPOSITORY + ':staging-stable'
-          }   
-        }
-        container('docker'){
-          sh "echo ${IMAGE_TAG}"
-          sh "echo ${STABLE_TAG}"
-          sh "docker pull ${IMAGE_REPOSITORY}:${IMAGE_TAG}"
-          sh "docker tag ${IMAGE_REPOSITORY}:${IMAGE_TAG} ${STABLE_TAG}"
-          sh "docker push ${STABLE_TAG}"
-        }
       }
     }
   }

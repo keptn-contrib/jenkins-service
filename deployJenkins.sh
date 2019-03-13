@@ -10,7 +10,7 @@ export DT_API_TOKEN=$(cat creds.json | jq -r '.dynatraceApiToken')
 export DT_TENANT_URL="$DT_TENANT_ID.live.dynatrace.com"
 
 # Deploy Jenkins - see keptn/install/setupInfrastructure.sh:
-rm -f config/service/gen/k8s-jenkins-deployment.yml
+rm -f config/jenkins/gen/k8s-jenkins-deployment.yml
 
 export GATEWAY=$(kubectl describe svc istio-ingressgateway -n istio-system | grep "LoadBalancer Ingress:" | sed 's~LoadBalancer Ingress:[ \t]*~~')
 
@@ -20,11 +20,15 @@ cat config/jenkins/k8s-jenkins-deployment.yml | \
   sed 's~GITHUB_ORGANIZATION_PLACEHOLDER~'"$GITHUB_ORGANIZATION"'~' | \
   sed 's~DOCKER_REGISTRY_IP_PLACEHOLDER~'"$REGISTRY_URL"'~' | \
   sed 's~DT_TENANT_URL_PLACEHOLDER~'"$DT_TENANT_URL"'~' | \
-  sed 's~DT_API_TOKEN_PLACEHOLDER~'"$DT_API_TOKEN"'~' >> config/service/gen/k8s-jenkins-deployment.yml
+  sed 's~DT_API_TOKEN_PLACEHOLDER~'"$DT_API_TOKEN"'~' >> ../manifests/gen/k8s-jenkins-deployment.yml
 
 kubectl create -f config/jenkins/k8s-jenkins-pvcs.yml 
 kubectl create -f config/jenkins/gen/k8s-jenkins-deployment.yml
 kubectl create -f config/jenkins/k8s-jenkins-rbac.yml
+kubectl create -f config/jenkins/k8s-jenkins-service-entry.yml
+
+echo "Wait 100s for Jenkins..."
+sleep 100
 
 # Setup credentials in Jenkins
 echo "--------------------------"
