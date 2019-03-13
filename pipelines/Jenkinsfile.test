@@ -30,6 +30,8 @@ pipeline {
       steps {
         container('jmeter') {
           sh "rm -rf HealthCheck_${env.SERVICE}"
+          sh "rm -f HealthCheck_${env.SERVICE}_result.tlf"
+          sh "rm -f output.txt"
 
           script {
             def status = executeJMeter ( 
@@ -61,6 +63,8 @@ pipeline {
       steps {
         container('jmeter') {
           sh "rm -rf FuncCheck_${env.SERVICE}"
+          sh "rm -f FuncCheck_${env.SERVICE}_result.tlf"
+          sh "rm -f output.txt"
 
           script {
             def status = executeJMeter (
@@ -92,6 +96,8 @@ pipeline {
       steps {
         container('jmeter') {
           sh "rm -rf PerfCheck_${env.SERVICE}"
+          sh "rm -f PerfCheck_${env.SERVICE}_result.tlf"
+          sh "rm -f output.txt"
 
           script {
             def status = executeJMeter (
