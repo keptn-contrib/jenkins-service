@@ -713,7 +713,7 @@
             </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
             <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               <name>helm</name>
-              <image>alpine/helm</image>
+              <image>alpine/helm:2.12.3</image>
               <privileged>false</privileged>
               <alwaysPullImage>false</alwaysPullImage>
               <workingDir>/home/jenkins</workingDir>
