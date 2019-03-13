@@ -36,9 +36,9 @@ echo "Setup Credentials in Jenkins "
 echo "--------------------------"
 
 # Export Jenkins route in a variable
-export JENKINS_URL=$(kubectl describe svc jenkins -n cicd | grep "LoadBalancer Ingress:" | sed 's~LoadBalancer Ingress:[ \t]*~~')
+export JENKINS_URL="jenkins.keptn.'$GATEWAY'.xip.io"
 
-curl -X POST http://$JENKINS_URL:24711/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
+curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
 --data-urlencode 'json={
   "": "0",
   "credentials": {
@@ -51,7 +51,7 @@ curl -X POST http://$JENKINS_URL:24711/credentials/store/system/domain/_/createC
   }
 }'
 
-curl -X POST http://$JENKINS_URL:24711/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
+curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
 --data-urlencode 'json={
   "": "0",
   "credentials": {
