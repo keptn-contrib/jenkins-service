@@ -35,7 +35,7 @@ echo "Setup Credentials in Jenkins "
 echo "--------------------------"
 
 # Export Jenkins route in a variable
-export JENKINS_URL="jenkins.keptn.'$GATEWAY'.xip.io"
+export JENKINS_URL="jenkins.keptn.$GATEWAY.xip.io"
 
 curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
 --data-urlencode 'json={
