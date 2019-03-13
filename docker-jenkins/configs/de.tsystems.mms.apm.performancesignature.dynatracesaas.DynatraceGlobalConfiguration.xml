@@ -1,5 +1,5 @@
 <?xml version='1.1' encoding='UTF-8'?>
-<de.tsystems.mms.apm.performancesignature.dynatracesaas.DynatraceGlobalConfiguration plugin="performance-signature-dynatracesaas@3.0.1">
+<de.tsystems.mms.apm.performancesignature.dynatracesaas.DynatraceGlobalConfiguration plugin="performance-signature-dynatracesaas@3.1.1">
   <configurations>
     <de.tsystems.mms.apm.performancesignature.dynatracesaas.model.DynatraceServerConfiguration>
       <name>Dynatrace Tenant</name>

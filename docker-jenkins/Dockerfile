@@ -99,12 +99,13 @@ git:3.9.1 \
 google-oauth-plugin:0.6 \
 google-source-plugin:0.3 \
 performance:3.12 \
-performance-signature-dynatracesaas:3.0.1 \
-performance-signature-ui:3.0.1 \
-performance-signature-viewer:3.0.1 \
+performance-signature-dynatracesaas:3.1.1 \
+performance-signature-ui:3.1.1 \
+performance-signature-viewer:3.1.1 \
 github-branch-source:2.4.1
 
-#RUN cp -R /tmp/jobs/* "$JENKINS_HOME"/jobs/
+RUN cp -R /tmp/jobs/* "$JENKINS_HOME"/jobs/
+RUN ls "$JENKINS_HOME"/jobs/
 RUN chown -R ${user} "$JENKINS_HOME"
 RUN chmod -R 777 "$JENKINS_HOME"
 RUN chmod -R 777 /root
