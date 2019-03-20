@@ -38,7 +38,7 @@ export class JenkinsService {
         resolve();
       });
     });
-
+    console.log('[jenkins-service]: Service deployment triggered.');
     return deployed;
   }
 
@@ -93,7 +93,7 @@ export class JenkinsService {
         resolve();
       });
     });
-
+    console.log('[jenkins-service]: Evaluation triggered.');
     return evaluated;
   }
 }
