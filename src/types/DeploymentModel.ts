@@ -13,4 +13,7 @@ export class DeploymentModel {
   service: string;
   image: string;
   tag: string;
+
+  app: string;
+  version: string;
 }

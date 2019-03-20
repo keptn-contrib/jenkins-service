@@ -17,27 +17,67 @@ export class JenkinsService {
     return JenkinsService.instance;
   }
 
-  async deployService(deployment: DeploymentModel) : Promise<boolean> {
+  async newArtefact(deployment: DeploymentModel) : Promise<boolean> {
     const deployed: boolean = false;
 
     new Promise(resolve => {
       jenkins.job.build({
-        name: `/deploy`,
+        name: `/_new-artefact`,
         parameters: {
           GITHUBORG: deployment.githuborg,
           PROJECT: deployment.project,
-          TESTSTRATEGY: deployment.teststategy,
-          DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
           STAGE: deployment.stage,
-          SERVICE: deployment.service,
-          IMAGE: deployment.image,
-          TAG: deployment.tag,
+          APP: deployment.app,
+          VERSION: deployment.version,
         },
       }, function(err) {
         if (err) console.log(err);
         resolve();
       });
     });
+
+    return deployed;
+  }
+
+  async deployService(deployment: DeploymentModel) : Promise<boolean> {
+    const deployed: boolean = false;
+
+    if (deployment.image) {
+      new Promise(resolve => {
+        jenkins.job.build({
+          name: `/deploy`,
+          parameters: {
+            GITHUBORG: deployment.githuborg,
+            PROJECT: deployment.project,
+            TESTSTRATEGY: deployment.teststategy,
+            DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
+            STAGE: deployment.stage,
+            SERVICE: deployment.service,
+            IMAGE: deployment.image,
+            TAG: deployment.tag,
+          },
+        }, function(err) {
+          if (err) console.log(err);
+          resolve();
+        });
+      });
+    } else if (deployment.version) {
+      new Promise(resolve => {
+        jenkins.job.build({
+          name: `/_deploy-cf`,
+          parameters: {
+            GITHUBORG: deployment.githuborg,
+            PROJECT: deployment.project,
+            STAGE: deployment.stage,
+            APP: deployment.app,
+            VERSION: deployment.version,
+          },
+        }, function(err) {
+          if (err) console.log(err);
+          resolve();
+        });
+      });
+    }
 
     return deployed;
   }
