@@ -35,7 +35,7 @@ export class JenkinsService {
         resolve();
       });
     });
-    console.log('[jenkins-service]: Service deployment triggered.');
+    console.log('[jenkins-service]: New artefact pipeline triggered.');
     return deployed;
   }
 
@@ -55,6 +55,7 @@ export class JenkinsService {
             SERVICE: deployment.service,
             IMAGE: deployment.image,
             TAG: deployment.tag,
+            PREVBLUEVERSION: deployment.prevblueversion,
           },
         }, function(err) {
           if (err) console.log(err);
