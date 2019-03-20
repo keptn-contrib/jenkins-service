@@ -32,6 +32,7 @@ export class JenkinsService {
           SERVICE: deployment.service,
           IMAGE: deployment.image,
           TAG: deployment.tag,
+          KEPTNCONTEXT: deployment.keptnContext,
           PREVBLUEVERSION: deployment.prevblueversion,
         },
       }, function(err) {
@@ -59,6 +60,7 @@ export class JenkinsService {
             SERVICE: deployment.service,
             IMAGE: deployment.image,
             TAG: deployment.tag,
+            KEPTNCONTEXT: deployment.keptnContext,
             PREVBLUEVERSION: deployment.prevblueversion,
           },
         }, function(err) {
@@ -89,6 +91,7 @@ export class JenkinsService {
           SERVICE: deployment.service,
           IMAGE: deployment.image,
           TAG: deployment.tag,
+          KEPTNCONTEXT: deployment.keptnContext,
           PREVBLUEVERSION: deployment.prevblueversion,
         },
       }, function(err) {
