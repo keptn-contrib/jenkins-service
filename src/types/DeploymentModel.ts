@@ -13,4 +13,5 @@ export class DeploymentModel {
   service: string;
   image: string;
   tag: string;
+  prevblueversion: string;
 }
