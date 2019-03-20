@@ -15,4 +15,7 @@ export class DeploymentModel {
   tag: string;
   keptnContext: string; 
   prevblueversion: string;
+
+  app: string;
+  version: string;
 }
