@@ -28,14 +28,14 @@ export class JenkinsService {
           PROJECT: deployment.project,
           STAGE: deployment.stage,
           APP: deployment.app,
-          VERSION: deployment.version,
+          VERSION: deployment.version
         },
       }, function(err) {
         if (err) console.log(err);
         resolve();
       });
     });
-
+    console.log('[jenkins-service]: Service deployment triggered.');
     return deployed;
   }
 
@@ -98,6 +98,7 @@ export class JenkinsService {
             SERVICE: deployment.service,
             IMAGE: deployment.image,
             TAG: deployment.tag,
+            PREVBLUEVERSION: deployment.prevblueversion,
           },
         }, function(err) {
           if (err) console.log(err);
@@ -127,13 +128,14 @@ export class JenkinsService {
           SERVICE: deployment.service,
           IMAGE: deployment.image,
           TAG: deployment.tag,
+          PREVBLUEVERSION: deployment.prevblueversion,
         },
       }, function(err) {
         if (err) console.log(err);
         resolve();
       });
     });
-
+    console.log('[jenkins-service]: Evaluation triggered.');
     return evaluated;
   }
 }

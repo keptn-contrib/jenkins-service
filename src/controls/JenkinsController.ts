@@ -65,7 +65,6 @@ export class JenkinsController implements interfaces.Controller {
 
         console.log('[jenkins-service]: Trigger service deployment.');
         await jenkinsSvc.deployService(cloudEvent.data);
-        console.log('[jenkins-service]: Service deployment triggered.');
 
       } else if (request.body.type == 'sh.keptn.events.deployment-finished') {
 
@@ -76,7 +75,6 @@ export class JenkinsController implements interfaces.Controller {
 
         console.log('[jenkins-service]: Trigger test evaluation.');
         await jenkinsSvc.evaluateTests(cloudEvent.data);
-        console.log('[jenkins-service]: Evaluation triggered.');
 
       } else {
         console.log(`[jenkins]: This service does not handle the event type ${request.body.type}.`);

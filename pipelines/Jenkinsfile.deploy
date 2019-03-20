@@ -19,14 +19,15 @@ def STABLE_TAG = 'UNKNOWN'
 
 pipeline {
   parameters {
-    string(name: 'GITHUBORG', defaultValue: 'keptn-tiger', description: 'The name of the GitHub organization.', trim: true)
-    string(name: 'PROJECT', defaultValue: 'sockshop', description: 'The name of the entire project.', trim: true)
-    string(name: 'TESTSTRATEGY', defaultValue: 'functional', description: 'The test strategy for this stage.', trim: true)
-    string(name: 'DEPLOYMENTSTRATEGY', defaultValue: 'direct', description: 'The deployment strategy for this stage.', trim: true)
-    string(name: 'STAGE', defaultValue: 'devnew', description: 'The stage to deploy the service to.', trim: true)
-    string(name: 'SERVICE', defaultValue: 'carts', description: 'The name of the service to deploy.', trim: true)
-    string(name: 'IMAGE', defaultValue: '10.7.244.127:5000/sockshop/carts', description: 'The image of the new service.', trim: true)
-    string(name: 'TAG', defaultValue: '0.6.0-18', description: 'The tag of the new service.', trim: true)
+    string(name: 'GITHUBORG', defaultValue: '', description: 'The name of the GitHub organization.', trim: true)
+    string(name: 'PROJECT', defaultValue: '', description: 'The name of the entire project.', trim: true)
+    string(name: 'TESTSTRATEGY', defaultValue: '', description: 'The test strategy for this stage.', trim: true)
+    string(name: 'DEPLOYMENTSTRATEGY', defaultValue: '', description: 'The deployment strategy for this stage.', trim: true)
+    string(name: 'STAGE', defaultValue: '', description: 'The stage to deploy the service to.', trim: true)
+    string(name: 'SERVICE', defaultValue: '', description: 'The name of the service to deploy.', trim: true)
+    string(name: 'IMAGE', defaultValue: '', description: 'The image of the new service.', trim: true)
+    string(name: 'TAG', defaultValue: '', description: 'The tag of the new service.', trim: true)
+    string(name: 'PREVBLUEVERSION', defaultValue: '', description: 'The previous version deployed on blue.', trim: true)
   }
   agent {
     label 'kubegit'
@@ -65,6 +66,13 @@ pipeline {
         }
       }
       steps {
+        container('docker'){
+          sh "echo ${env.IMAGE}"
+          sh "echo ${env.PREVBLUEVERSION}"
+          sh "docker pull ${env.IMAGE}:${env.PREVBLUEVERSION}"
+          sh "docker tag ${env.IMAGE}:${env.PREVBLUEVERSION} ${env.IMAGE}:${env.STAGE}-stable"
+          sh "docker push ${env.IMAGE}:${env.STAGE}-stable"
+        }
         container('helm') {
           sh "helm init --client-only"
           sh "cd ${env.PROJECT} && helm dep update helm-chart/"
@@ -108,7 +116,8 @@ pipeline {
             [key: 'stage', value: "${env.STAGE}"],
             [key: 'service', value: "${env.SERVICE}"],
             [key: 'image', value: "${env.IMAGE}"],
-            [key: 'tag', value: "${env.TAG}"]
+            [key: 'tag', value: "${env.TAG}"],
+            [key: 'prevblueversion', value: "${env.PREVBLUEVERSION}"]
           ]
         )
       }
