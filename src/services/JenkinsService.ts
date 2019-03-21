@@ -1,5 +1,10 @@
 import { DeploymentModel } from '../types/DeploymentModel';
 
+import { Utils } from '../lib/Utils';
+
+// Util class
+const utils = new Utils();
+
 const jenkins = require('jenkins')({ baseUrl: `http://${process.env.JENKINS_USER}:${process.env.JENKINS_PASSWORD}@${process.env.JENKINS_URL}` });
 
 export class JenkinsService {
@@ -18,8 +23,6 @@ export class JenkinsService {
 
   async newArtefact(deployment: DeploymentModel) : Promise<boolean> {
     const deployed: boolean = false;
-
-    console.log('[jenkins-service]: Trigger new artefact.');
 
     if (deployment.version) {
       new Promise(resolve => {
@@ -44,8 +47,6 @@ export class JenkinsService {
 
   async deployService(deployment: DeploymentModel, keptnContext: string) : Promise<boolean> {
     const deployed: boolean = false;
-
-    console.log('[jenkins-service]: Trigger service deployment.');
 
     if (deployment.image) {
       new Promise(resolve => {
@@ -85,6 +86,7 @@ export class JenkinsService {
         });
       });
     }
+    utils.logMessage(keptnContext, `Launched deployment pipeline for ${deployment.service} in ${deployment.stage}.`);
 
     return deployed;
   }
@@ -92,8 +94,6 @@ export class JenkinsService {
   async startTests(deployment: DeploymentModel, keptnContext: string) : Promise<boolean> {
     let started: boolean = false;
     
-    console.log('[jenkins-service]: Trigger service testing.');
-
     if (deployment.teststategy !== '') {
       new Promise(resolve => {
         jenkins.job.build({
@@ -115,9 +115,9 @@ export class JenkinsService {
           resolve();
         });
       });
-      console.log('[jenkins-service]: Tests triggered.');
+      utils.logMessage(keptnContext, `Launched test pipeline for ${deployment.service} in ${deployment.stage}.`);
     } else {
-      console.log('[jenkins-service]: No test triggered because no test strategy defined.');
+      utils.logMessage(keptnContext, `No test triggered because ${deployment.service} in ${deployment.stage} has no test strategy defined.`);
     }
 
     return started;
@@ -125,8 +125,6 @@ export class JenkinsService {
 
   async evaluateTests(deployment: DeploymentModel, keptnContext: string) : Promise<boolean> {
     let evaluated: boolean = false;
-
-    console.log('[jenkins-service]: Trigger test evaluation.');
 
     new Promise(resolve => {
       jenkins.job.build({
@@ -148,8 +146,8 @@ export class JenkinsService {
         resolve();
       });
     });
-
-    console.log('[jenkins-service]: Evaluation triggered.');
+    utils.logMessage(keptnContext, `Launched test evaluation of ${deployment.service} in ${deployment.stage}`);
+    
     return evaluated;
   }
 }
