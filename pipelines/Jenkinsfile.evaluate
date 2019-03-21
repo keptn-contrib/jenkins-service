@@ -60,7 +60,7 @@ pipeline {
           receiver: 'event-broker.keptn.svc.cluster.local/keptn',
           type: 'sh.keptn.events.deployment-finished',
           source: 'Jenkins',
-          shkeptncontext : "${env.KEPTNCONTEXT}"
+          shkeptncontext : "${env.KEPTNCONTEXT}",
           data: [
             [key: 'githuborg', value: "${env.GITHUBORG}"],
             [key: 'project', value: "${env.PROJECT}"],
