@@ -1,6 +1,5 @@
 import { DeploymentModel } from '../types/DeploymentModel';
 
-//const jenkins = require('jenkins')({ baseUrl: 'http://admin:AiTx4u8VyUV8tCKk@jenkins.keptn.svc.cluster.local' });
 const jenkins = require('jenkins')({ baseUrl: `http://${process.env.JENKINS_USER}:${process.env.JENKINS_PASSWORD}@${process.env.JENKINS_URL}` });
 
 export class JenkinsService {
@@ -19,6 +18,8 @@ export class JenkinsService {
 
   async newArtefact(deployment: DeploymentModel) : Promise<boolean> {
     const deployed: boolean = false;
+
+    console.log('[jenkins-service]: Trigger new artefact.');
 
     if (deployment.version) {
       new Promise(resolve => {
@@ -40,9 +41,11 @@ export class JenkinsService {
     }
     return deployed;
   }
-  
-  async deployService(deployment: DeploymentModel) : Promise<boolean> {
+
+  async deployService(deployment: DeploymentModel, keptnContext: string) : Promise<boolean> {
     const deployed: boolean = false;
+
+    console.log('[jenkins-service]: Trigger service deployment.');
 
     if (deployment.image) {
       new Promise(resolve => {
@@ -57,7 +60,7 @@ export class JenkinsService {
             SERVICE: deployment.service,
             IMAGE: deployment.image,
             TAG: deployment.tag,
-            KEPTNCONTEXT: deployment.keptnContext,
+            KEPTNCONTEXT: keptnContext,
             PREVBLUEVERSION: deployment.prevblueversion,
           },
         }, function(err) {
@@ -86,9 +89,10 @@ export class JenkinsService {
     return deployed;
   }
 
-
-  async startTests(deployment: DeploymentModel) : Promise<boolean> {
+  async startTests(deployment: DeploymentModel, keptnContext: string) : Promise<boolean> {
     let started: boolean = false;
+    
+    console.log('[jenkins-service]: Trigger service testing.');
 
     if (deployment.teststategy !== '') {
       new Promise(resolve => {
@@ -103,7 +107,7 @@ export class JenkinsService {
             SERVICE: deployment.service,
             IMAGE: deployment.image,
             TAG: deployment.tag,
-            KEPTNCONTEXT: deployment.keptnContext,
+            KEPTNCONTEXT: keptnContext,
             PREVBLUEVERSION: deployment.prevblueversion,
           },
         }, function(err) {
@@ -119,8 +123,10 @@ export class JenkinsService {
     return started;
   }
 
-  async evaluateTests(deployment: DeploymentModel) : Promise<boolean> {
+  async evaluateTests(deployment: DeploymentModel, keptnContext: string) : Promise<boolean> {
     let evaluated: boolean = false;
+
+    console.log('[jenkins-service]: Trigger test evaluation.');
 
     new Promise(resolve => {
       jenkins.job.build({
@@ -134,7 +140,7 @@ export class JenkinsService {
           SERVICE: deployment.service,
           IMAGE: deployment.image,
           TAG: deployment.tag,
-          KEPTNCONTEXT: deployment.keptnContext,
+          KEPTNCONTEXT: keptnContext,
           PREVBLUEVERSION: deployment.prevblueversion,
         },
       }, function(err) {
@@ -142,6 +148,7 @@ export class JenkinsService {
         resolve();
       });
     });
+
     console.log('[jenkins-service]: Evaluation triggered.');
     return evaluated;
   }

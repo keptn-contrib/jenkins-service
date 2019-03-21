@@ -57,24 +57,16 @@ export class JenkinsController implements interfaces.Controller {
       const jenkinsSvc : JenkinsService = await JenkinsService.getInstance();
 
       if (request.body.type == 'sh.keptn.events.new-artefact') {
-
-        console.log('[jenkins-service]: Trigger new artefact.');
         await jenkinsSvc.newArtefact(cloudEvent.data);
 
       } else if (request.body.type == 'sh.keptn.events.configuration-changed') {
-
-        console.log('[jenkins-service]: Trigger service deployment.');
-        await jenkinsSvc.deployService(cloudEvent.data);
+        await jenkinsSvc.deployService(cloudEvent.data, cloudEvent.shkeptncontext);
 
       } else if (request.body.type == 'sh.keptn.events.deployment-finished') {
-
-        console.log('[jenkins-service]: Trigger service testing.');
-        await jenkinsSvc.startTests(cloudEvent.data);
+        await jenkinsSvc.startTests(cloudEvent.data, cloudEvent.shkeptncontext);
 
       } else if (request.body.type == 'sh.keptn.events.tests-finished') {
-
-        console.log('[jenkins-service]: Trigger test evaluation.');
-        await jenkinsSvc.evaluateTests(cloudEvent.data);
+        await jenkinsSvc.evaluateTests(cloudEvent.data, cloudEvent.shkeptncontext);
 
       } else {
         console.log(`[jenkins]: This service does not handle the event type ${request.body.type}.`);
