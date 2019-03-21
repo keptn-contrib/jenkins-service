@@ -153,7 +153,7 @@ pipeline {
       container("curl") {
         sendCloudEvent(
           receiver: 'event-broker.keptn.svc.cluster.local/keptn',
-          type: 'sh.keptn.events.deployment-finished',
+          type: 'sh.keptn.events.tests-finished',
           source: 'Jenkins',
           shkeptncontext : "${env.KEPTNCONTEXT}",
           data: [
