@@ -4,6 +4,7 @@ class Utils {
     console.log(JSON.stringify({ 
       keptnContext: keptnContext,
       keptnService: 'jenkins-service',
+      logLevel: 'INFO',
       message: message,
     }));
   }
