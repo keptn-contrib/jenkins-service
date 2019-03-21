@@ -153,8 +153,9 @@ pipeline {
       container("curl") {
         sendCloudEvent(
           receiver: 'event-broker.keptn.svc.cluster.local/keptn',
-          type: 'sh.keptn.events.tests-finished',
-          source: 'Jenkins', 
+          type: 'sh.keptn.events.deployment-finished',
+          source: 'Jenkins',
+          shkeptncontext : "${env.KEPTNCONTEXT}"
           data: [
             [key: 'githuborg', value: "${env.GITHUBORG}"],
             [key: 'project', value: "${env.PROJECT}"],
@@ -164,8 +165,7 @@ pipeline {
             [key: 'service', value: "${env.SERVICE}"],
             [key: 'image', value: "${env.IMAGE}"],
             [key: 'tag', value: "${env.TAG}"],
-            [key: 'prevblueversion', value: "${env.PREVBLUEVERSION}"],
-            [key: 'keptnContext', value: "${env.KEPTNCONTEXT}"]
+            [key: 'prevblueversion', value: "${env.PREVBLUEVERSION}"]
           ]
         )
       }
