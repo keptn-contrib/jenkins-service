@@ -23,7 +23,6 @@ pipeline {
     string(name: 'SERVICE', defaultValue: '', description: 'The name of the service to deploy.', trim: true)
     string(name: 'IMAGE', defaultValue: '', description: 'The image of the new service.', trim: true)
     string(name: 'TAG', defaultValue: '', description: 'The tag of the new service.', trim: true)
-    string(name: 'PREVBLUEVERSION', defaultValue: '', description: 'The previous version deployed on blue.', trim: true)
     string(name: 'KEPTNCONTEXT', defaultValue: '', description: 'An id used for keptn tracing', trim: true)
   }
   agent {
@@ -164,8 +163,7 @@ pipeline {
             [key: 'stage', value: "${env.STAGE}"],
             [key: 'service', value: "${env.SERVICE}"],
             [key: 'image', value: "${env.IMAGE}"],
-            [key: 'tag', value: "${env.TAG}"],
-            [key: 'prevblueversion', value: "${env.PREVBLUEVERSION}"]
+            [key: 'tag', value: "${env.TAG}"]
           ]
         )
       }

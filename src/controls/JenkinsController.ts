@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import * as express from 'express';
 import { inject, injectable } from 'inversify';
+import { CloudEvent } from 'cloudevent';
 import {
   controller,
   httpGet,
@@ -17,8 +18,10 @@ import {
 } from 'swagger-express-ts';
 
 import { JenkinsService } from '../services/JenkinsService';
+import { Utils } from '../lib/Utils';
 
-import { CloudEvent } from 'cloudevent';
+// Util class
+const utils = new Utils();
 
 @ApiPath({
   name: 'Jenkins',
@@ -69,7 +72,10 @@ export class JenkinsController implements interfaces.Controller {
         await jenkinsSvc.evaluateTests(cloudEvent.data, cloudEvent.shkeptncontext);
 
       } else {
-        console.log(`[jenkins]: This service does not handle the event type ${request.body.type}.`);
+        if (request.body.shkeptncontext ) {
+          utils.logMessage(request.body.shkeptncontext,
+            `This service does not handle the event type ${request.body.eventType}.`);
+        }
       }
     }
 
