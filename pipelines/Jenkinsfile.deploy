@@ -81,7 +81,7 @@ pipeline {
             tagMatchRules[0].tags[1].value = "${env.SERVICE}"
             tagMatchRules[0].tags[2].value = "${env.STAGE}"
             try {
-              sh "echo No DT creds available"
+              sh "echo DT creds available"
               withCredentials([string(credentialsId: 'perfsig-api-token', variable: 'irrelevant')]) {
                 def status = pushDynatraceDeploymentEvent (
                   tagRule : tagMatchRules,
@@ -93,7 +93,7 @@ pipeline {
                   ]
                 )
               }
-            } catch (_) {
+            } catch (Exception e) {
               sh "echo No DT creds available"
             }
             
