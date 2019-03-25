@@ -52,6 +52,11 @@ pipeline {
       }
     }
     stage('Send keptn event') {
+      when {
+        expression {
+          return env.TESTSTRATEGY ==~ 'performance' 
+        }
+      }
       steps {
         container("curl") {
           sendCloudEvent(
@@ -75,7 +80,7 @@ pipeline {
     }
   }
   post {
-    failure {
+    success {
       script {
         if ( ${TESTSTRATEGY} ==~ 'blue_green_service' ) {
           container("git"){
