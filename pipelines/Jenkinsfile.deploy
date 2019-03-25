@@ -81,7 +81,7 @@ pipeline {
             tagMatchRules[0].tags[1].value = "${env.SERVICE}"
             tagMatchRules[0].tags[2].value = "${env.STAGE}"
             try {
-              withCredentials([apiToken(credentialsId: 'perfsig-api-token')]) {
+              withCredentials([apiToken(credentialsId: 'perfsig-api-token', name: 'irrelevant')]) {
                 def status = pushDynatraceDeploymentEvent (
                   tagRule : tagMatchRules,
                   deploymentVersion : "${env.TAG}",
