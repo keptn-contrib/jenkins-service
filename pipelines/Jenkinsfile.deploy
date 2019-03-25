@@ -80,15 +80,23 @@ pipeline {
             tagMatchRules[0].tags[0].value = "${env.PROJECT}"
             tagMatchRules[0].tags[1].value = "${env.SERVICE}"
             tagMatchRules[0].tags[2].value = "${env.STAGE}"
-            def status = pushDynatraceDeploymentEvent (
-              tagRule : tagMatchRules,
-              deploymentVersion : "${env.TAG}",
-              deploymentName : "${env.SERVICE}",
-              deploymentProject : "${env.PROJECT}", 
-              customProperties : [
-                [key: 'Jenkins Build Number', value: "${env.BUILD_ID}"],
-              ]
-            )
+            try {
+              sh "echo No DT creds available"
+              withCredentials([string(credentialsId: 'perfsig-api-token', variable: 'irrelevant')]) {
+                def status = pushDynatraceDeploymentEvent (
+                  tagRule : tagMatchRules,
+                  deploymentVersion : "${env.TAG}",
+                  deploymentName : "${env.SERVICE}",
+                  deploymentProject : "${env.PROJECT}", 
+                  customProperties : [
+                    [key: 'Jenkins Build Number', value: "${env.BUILD_ID}"],
+                  ]
+                )
+              }
+            } catch (_) {
+              sh "echo No DT creds available"
+            }
+            
           }
         }
       }
