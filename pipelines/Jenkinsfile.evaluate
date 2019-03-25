@@ -82,7 +82,7 @@ pipeline {
   post {
     success {
       script {
-        if ( env.TESTSTRATEGY ==~ 'blue_green_service' ) {
+        if ( env.DEPLOYMENTSTRATEGY ==~ 'blue_green_service' ) {
           container("git"){
             withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
               sh "rm -rf ${env.PROJECT}"
