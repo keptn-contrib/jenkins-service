@@ -74,47 +74,27 @@ pipeline {
       }
     }
     post {
-      failure {
-        script {
-          if ( ${TESTSTRATEGY} ==~ 'blue_green_service' ) {
-            container("git"){
-              withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                sh "rm -rf ${env.PROJECT}"
-                sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
-                sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUBORG}/${env.PROJECT}"
-                sh "cd ${env.PROJECT} && git checkout ${env.STAGE}"
-
-                sh "cd ${env.PROJECT} && sed -i \"s#weight: 0#weight: x100#\" helm-chart/templates/istio-virtual-service-${env.SERVICE}.yaml"
-                sh "cd ${env.PROJECT} && sed -i \"s#weight: 100#weight: 0#\" helm-chart/templates/istio-virtual-service-${env.SERVICE}.yaml"
-                sh "cd ${env.PROJECT} && sed -i \"s#weight: x100#weight: 100#\" helm-chart/templates/istio-virtual-service-${env.SERVICE}.yaml"
-
-                sh "cd ${env.PROJECT} && git add ."
-                sh "cd ${env.PROJECT} && git commit -am '[keptn] Switched blue green'"
-                sh "cd ${env.PROJECT} && git push"
-              }
-            }
-
-            container("curl") {
-              sendCloudEvent(
-                receiver: 'event-broker.keptn.svc.cluster.local/keptn',
-                type: 'sh.keptn.events.configuration-changed',
-                source: 'Jenkins',
-                shkeptncontext : "${env.KEPTNCONTEXT}",
-                data: [
-                  [key: 'githuborg', value: "${env.GITHUBORG}"],
-                  [key: 'project', value: "${env.PROJECT}"],
-                  [key: 'teststategy', value: ""],
-                  [key: 'deploymentstrategy', value: "${env.DEPLOYMENTSTRATEGY}"],
-                  [key: 'stage', value: "${env.STAGE}"],
-                  [key: 'service', value: "${env.SERVICE}"],
-                  [key: 'image', value: "${env.IMAGE}"],
-                  [key: 'tag', value: "${env.TAG}"]
-                ]
-              )
-            }
-          }
+      always {
+        container("curl") {
+          sendCloudEvent(
+            receiver: 'event-broker.keptn.svc.cluster.local/keptn',
+            type: 'sh.keptn.events.configuration-changed',
+            source: 'Jenkins',
+            shkeptncontext : "${env.KEPTNCONTEXT}",
+            data: [
+              [key: 'githuborg', value: "${env.GITHUBORG}"],
+              [key: 'project', value: "${env.PROJECT}"],
+              [key: 'teststategy', value: ""],
+              [key: 'deploymentstrategy', value: "${env.DEPLOYMENTSTRATEGY}"],
+              [key: 'stage', value: "${env.STAGE}"],
+              [key: 'service', value: "${env.SERVICE}"],
+              [key: 'image', value: "${env.IMAGE}"],
+              [key: 'tag', value: "${env.TAG}"]
+            ]
+          )
         }
       }
     }
   }
 }
+
