@@ -27,7 +27,7 @@ export class JenkinsService {
     if (deployment.version) {
       new Promise(resolve => {
         jenkins.job.build({
-          name: `/_new-artefact`,
+          name: `/new-artefact`,
           parameters: {
             GITHUBORG: deployment.githuborg,
             PROJECT: deployment.project,
@@ -71,7 +71,7 @@ export class JenkinsService {
     } else if (deployment.version) {
       new Promise(resolve => {
         jenkins.job.build({
-          name: `/_deploy-cf`,
+          name: `/deploy-cf`,
           parameters: {
             GITHUBORG: deployment.githuborg,
             PROJECT: deployment.project,
