@@ -93,7 +93,8 @@ pipeline {
                 )
               }
             } catch (Exception e) {
-              sh "echo No DT creds available"
+              echo 'Log of Error: ' + e.toString()
+              echo 'No DT creds available'
             }
             
           }
