@@ -112,18 +112,18 @@ pipeline {
           tagMatchRules[0].tags[0].value = "${env.PROJECT}"
           tagMatchRules[0].tags[1].value = "${env.SERVICE}"
           tagMatchRules[0].tags[2].value = "${env.STAGE}"
+          String dtTenant = "${DT_TENANT_URL}"
+          if (dtTenant != null && (dtTenant.endsWith("dynatrace.com") || dtTenant.endsWith("dynatrace.com/"))) {
+            recordDynatraceSession (
+              envId: 'Dynatrace Tenant',
+              testCase: 'performance',
+              tagMatchRules: tagMatchRules
+            )
+          } else {
+            println "No DT creds available"
+          }
         }
         
-        String dtTenant = "${DT_TENANT_URL}"
-        if (dtTenant != null && (dtTenant.endsWith("dynatrace.com") || dtTenant.endsWith("dynatrace.com/"))) {
-          recordDynatraceSession (
-            envId: 'Dynatrace Tenant',
-            testCase: 'performance',
-            tagMatchRules: tagMatchRules
-          )
-        } else {
-          println "No DT creds available"
-        }
         container('jmeter') {
           sh "rm -rf PerfCheck_${env.SERVICE}"
           sh "rm -f PerfCheck_${env.SERVICE}_result.tlf"
