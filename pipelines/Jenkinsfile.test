@@ -113,34 +113,38 @@ pipeline {
           tagMatchRules[0].tags[1].value = "${env.SERVICE}"
           tagMatchRules[0].tags[2].value = "${env.STAGE}"
         }
+        
+        String dtTenant = "${DT_TENANT_URL}"
+        if (dtTenant != null && (dtTenant.endsWith("dynatrace.com") || dtTenant.endsWith("dynatrace.com/"))) {
+          recordDynatraceSession (
+            envId: 'Dynatrace Tenant',
+            testCase: 'performance',
+            tagMatchRules: tagMatchRules
+          )
+        } else {
+          println "No DT creds available"
+        }
+        container('jmeter') {
+          sh "rm -rf PerfCheck_${env.SERVICE}"
+          sh "rm -f PerfCheck_${env.SERVICE}_result.tlf"
+          sh "rm -f output.txt"
 
-        recordDynatraceSession (
-          envId: 'Dynatrace Tenant',
-          testCase: 'performance',
-          tagMatchRules: tagMatchRules
-        ) {
-          container('jmeter') {
-            sh "rm -rf PerfCheck_${env.SERVICE}"
-            sh "rm -f PerfCheck_${env.SERVICE}_result.tlf"
-            sh "rm -f output.txt"
-
-            script {
-              def status = executeJMeter (
-                scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_load.jmx", 
-                resultsDir: "PerfCheck_${env.SERVICE}",
-                serverUrl: "${env.SERVICE}.${env.STAGE}", 
-                serverPort: 80,
-                checkPath: '/health',
-                vuCount: 10,
-                loopCount: 10,
-                LTN: "PerfCheck_${BUILD_NUMBER}",
-                funcValidation: true,
-                avgRtValidation: 0
-              )
-              if (status != 0) {
-                currentBuild.result = 'FAILED'
-                error "Performance check failed."
-              }
+          script {
+            def status = executeJMeter (
+              scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_load.jmx", 
+              resultsDir: "PerfCheck_${env.SERVICE}",
+              serverUrl: "${env.SERVICE}.${env.STAGE}", 
+              serverPort: 80,
+              checkPath: '/health',
+              vuCount: 10,
+              loopCount: 10,
+              LTN: "PerfCheck_${BUILD_NUMBER}",
+              funcValidation: true,
+              avgRtValidation: 0
+            )
+            if (status != 0) {
+              currentBuild.result = 'FAILED'
+              error "Performance check failed."
             }
           }
         }

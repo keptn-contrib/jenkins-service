@@ -44,11 +44,16 @@ pipeline {
         }
       }
       steps {
-        perfSigDynatraceReports(
-          envId: 'Dynatrace Tenant', 
-          nonFunctionalFailure: 1, 
-          specFile: "${env.SERVICE}/monspec/${env.SERVICE}_perfsig.json"
-        )
+        String dtTenant = "${DT_TENANT_URL}"
+        if (dtTenant != null && (dtTenant.endsWith("dynatrace.com") || dtTenant.endsWith("dynatrace.com/"))) {
+          perfSigDynatraceReports(
+            envId: 'Dynatrace Tenant', 
+            nonFunctionalFailure: 1, 
+            specFile: "${env.SERVICE}/monspec/${env.SERVICE}_perfsig.json"
+          )
+        } else {
+          println "No DT creds available"
+        }
       }
     }
     stage('Send keptn event') {
