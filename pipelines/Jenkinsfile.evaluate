@@ -47,6 +47,7 @@ pipeline {
         script {
           String dtTenant = "${DT_TENANT_URL}"
           if (dtTenant != null && (dtTenant.endsWith("dynatrace.com") || dtTenant.endsWith("dynatrace.com/"))) {
+            sh "cat ${env.SERVICE}/monspec/${env.SERVICE}_perfsig.json"
             perfSigDynatraceReports(
               envId: 'Dynatrace Tenant', 
               nonFunctionalFailure: 1, 
