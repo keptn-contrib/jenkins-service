@@ -203,7 +203,7 @@ pipeline {
     }
   }
   post {
-    failure {
+    unstable {
       script {
         if ( env.DEPLOYMENTSTRATEGY ==~ 'blue_green_service' ) {
           container("git"){
