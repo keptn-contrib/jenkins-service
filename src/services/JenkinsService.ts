@@ -96,7 +96,7 @@ export class JenkinsService {
     if (deployment.teststategy !== '') {
       new Promise(resolve => {
         jenkins.job.build({
-          name: `/test`,
+          name: `/test_evaluate`,
           parameters: {
             GITHUBORG: deployment.githuborg,
             PROJECT: deployment.project,
