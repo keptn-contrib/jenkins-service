@@ -83,7 +83,7 @@ pipeline {
 
           script {
             def status = executeJMeter (
-              scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_load.jmx", 
+              scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
               resultsDir: "FuncCheck_${env.SERVICE}",
               serverUrl: "${env.SERVICE}.${env.STAGE}", 
               serverPort: 80,
@@ -128,7 +128,7 @@ pipeline {
 
                 script {
                   def status = executeJMeter (
-                    scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_load.jmx", 
+                    scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
                     resultsDir: "PerfCheck_${env.SERVICE}",
                     serverUrl: "${env.SERVICE}.${env.STAGE}", 
                     serverPort: 80,
@@ -158,13 +158,13 @@ pipeline {
 
               script {
                 def status = executeJMeter (
-                  scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_load.jmx", 
+                  scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
                   resultsDir: "PerfCheck_${env.SERVICE}",
                   serverUrl: "${env.SERVICE}.${env.STAGE}", 
                   serverPort: 80,
                   checkPath: '/health',
                   vuCount: 10,
-                  loopCount: 10,
+                  loopCount: 250,
                   LTN: "PerfCheck_${BUILD_NUMBER}",
                   funcValidation: true,
                   avgRtValidation: 0
