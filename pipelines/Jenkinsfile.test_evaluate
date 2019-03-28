@@ -147,7 +147,7 @@ pipeline {
                     vuCount: 10,
                     loopCount: 250,
                     LTN: "PerfCheck_${BUILD_NUMBER}",
-                    funcValidation: true,
+                    funcValidation: false,
                     avgRtValidation: 0
                   )
                   if (status != 0) {
@@ -177,7 +177,7 @@ pipeline {
                   vuCount: 10,
                   loopCount: 250,
                   LTN: "PerfCheck_${BUILD_NUMBER}",
-                  funcValidation: true,
+                  funcValidation: false,
                   avgRtValidation: 0
                 )
                 if (status != 0) {
