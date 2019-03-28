@@ -179,8 +179,10 @@ pipeline {
         }
       }
     }
-    stage('Send keptn event') {
-      steps {
+  }
+  post {
+    success {
+      script {
         container("curl") {
           sendCloudEvent(
             receiver: 'event-broker.keptn.svc.cluster.local/keptn',
@@ -201,8 +203,6 @@ pipeline {
         }
       }
     }
-  }
-  post {
     unstable {
       script {
         if ( env.DEPLOYMENTSTRATEGY ==~ 'blue_green_service' ) {
@@ -222,7 +222,46 @@ pipeline {
               sh "cd ${env.PROJECT} && git push"
             }
           }
+          container("curl") {
+            sendCloudEvent(
+              receiver: 'event-broker.keptn.svc.cluster.local/keptn',
+              type: 'sh.keptn.events.configuration-changed',
+              source: 'Jenkins',
+              shkeptncontext : "${env.KEPTNCONTEXT}",
+              data: [
+                [key: 'githuborg', value: "${env.GITHUBORG}"],
+                [key: 'project', value: "${env.PROJECT}"],
+                [key: 'teststategy', value: ""],
+                [key: 'deploymentstrategy', value: "${env.DEPLOYMENTSTRATEGY}"],
+                [key: 'stage', value: "${env.STAGE}"],
+                [key: 'service', value: "${env.SERVICE}"],
+                [key: 'image', value: "${env.IMAGE}"],
+                [key: 'tag', value: "${env.TAG}"]
+              ]
+            )
+          }
+        }
+      }
+    }
+    failure {
+      script {
+        if ( env.DEPLOYMENTSTRATEGY ==~ 'blue_green_service' ) {
+          container("git"){
+            withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+              sh "rm -rf ${env.PROJECT}"
+              sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
+              sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUBORG}/${env.PROJECT}"
+              sh "cd ${env.PROJECT} && git checkout ${env.STAGE}"
 
+              sh "cd ${env.PROJECT} && sed -i \"s#weight: 0#weight: swap_100#\" helm-chart/templates/istio-virtual-service-${env.SERVICE}.yaml"
+              sh "cd ${env.PROJECT} && sed -i \"s#weight: 100#weight: 0#\" helm-chart/templates/istio-virtual-service-${env.SERVICE}.yaml"
+              sh "cd ${env.PROJECT} && sed -i \"s#weight: swap_100#weight: 100#\" helm-chart/templates/istio-virtual-service-${env.SERVICE}.yaml"
+
+              sh "cd ${env.PROJECT} && git add ."
+              sh "cd ${env.PROJECT} && git commit -am '[keptn]: Switched blue green due to failed evaluation.'"
+              sh "cd ${env.PROJECT} && git push"
+            }
+          }
           container("curl") {
             sendCloudEvent(
               receiver: 'event-broker.keptn.svc.cluster.local/keptn',
