@@ -44,10 +44,12 @@ pipeline {
       }
     }
     stage('Run health check') {
-      script {
-        GATEWAY = kubectl get svc istio-ingressgateway -n istio-system -o yaml | yq - r status.loadBalancer.ingress[0] + 'xip.io'
-      }
       steps {
+        container('kubectl') {
+          script {
+            GATEWAY = kubectl get svc istio-ingressgateway -n istio-system -o yaml | yq - r status.loadBalancer.ingress[0] + 'xip.io'
+          }
+        }
         container('jmeter') {
           sh "rm -rf HealthCheck_${env.SERVICE}"
           sh "rm -f HealthCheck_${env.SERVICE}_result.tlf"
