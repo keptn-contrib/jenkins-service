@@ -13,6 +13,8 @@ def tagMatchRules = [
   ]
 ]
 
+def GATEWAY = 'UNKNOWN'
+
 pipeline {
   parameters {
     string(name: 'GITHUBORG', defaultValue: '', description: 'The name of the GitHub organization.', trim: true)
@@ -42,17 +44,19 @@ pipeline {
       }
     }
     stage('Run health check') {
+      script {
+        GATEWAY = kubectl get svc istio-ingressgateway -n istio-system -o yaml | yq - r status.loadBalancer.ingress[0] + 'xip.io'
+      }
       steps {
         container('jmeter') {
           sh "rm -rf HealthCheck_${env.SERVICE}"
           sh "rm -f HealthCheck_${env.SERVICE}_result.tlf"
           sh "rm -f output.txt"
-
           script {
             def status = executeJMeter ( 
               scriptName: "${env.SERVICE}/jmeter/basiccheck.jmx", 
               resultsDir: "HealthCheck_${env.SERVICE}",
-              serverUrl: "${env.SERVICE}.${env.STAGE}.$(kubectl get svc istio-ingressgateway -n istio-system -o yaml | yq - r status.loadBalancer.ingress[0].ip).xip.io",
+              serverUrl: "${env.SERVICE}.${env.STAGE}.${GATEWAY}",
               serverPort: 80,
               checkPath: '/health',
               vuCount: 1,
@@ -130,7 +134,7 @@ pipeline {
                   def status = executeJMeter (
                     scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
                     resultsDir: "PerfCheck_${env.SERVICE}",
-                    serverUrl: "${env.SERVICE}.${env.STAGE}.$(kubectl get svc istio-ingressgateway -n istio-system -o yaml | yq - r status.loadBalancer.ingress[0].ip).xip.io", 
+                    serverUrl: "${env.SERVICE}.${env.STAGE}",
                     serverPort: 80,
                     checkPath: '/health',
                     vuCount: 10,
@@ -160,7 +164,7 @@ pipeline {
                 def status = executeJMeter (
                   scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
                   resultsDir: "PerfCheck_${env.SERVICE}",
-                  serverUrl: "${env.SERVICE}.${env.STAGE}.$(kubectl get svc istio-ingressgateway -n istio-system -o yaml | yq - r status.loadBalancer.ingress[0].ip).xip.io", 
+                  serverUrl: "${env.SERVICE}.${env.STAGE}",
                   serverPort: 80,
                   checkPath: '/health',
                   vuCount: 10,
