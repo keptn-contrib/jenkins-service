@@ -46,8 +46,9 @@ pipeline {
     stage('Run health check') {
       steps {
         container('kubectl') {
+          sh "kubectl get svc istio-ingressgateway -n istio-system -o yaml | yq - r status.loadBalancer.ingress[0] >> gateway"
           script {
-            GATEWAY = kubectl get svc istio-ingressgateway -n istio-system -o yaml | yq - r status.loadBalancer.ingress[0] + 'xip.io'
+            GATEWAY = readFile('gatway').trim()
           }
         }
         container('jmeter') {
