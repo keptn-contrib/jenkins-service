@@ -50,10 +50,10 @@ pipeline {
 
         }
         container('yq') {
-          sh "cat gateway_all | yq - r status.loadBalancer.ingress[0] >> gateway"
+          sh "cat gateway_all | yq - r status.loadBalancer.ingress[0].ip >> gateway"
           script {
             GATEWAY = readFile('gateway').trim()
-            GATEWAY = GATEWAY + 'xip.io'
+            GATEWAY = GATEWAY + '.xip.io'
           }
         }
         container('jmeter') {
