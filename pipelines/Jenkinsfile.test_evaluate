@@ -141,7 +141,7 @@ pipeline {
                   def status = executeJMeter (
                     scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
                     resultsDir: "PerfCheck_${env.SERVICE}",
-                    serverUrl: "${env.SERVICE}.${env.STAGE}.{GATEWAY}",
+                    serverUrl: "${env.SERVICE}.${env.STAGE}.${GATEWAY}",
                     serverPort: 80,
                     checkPath: '/health',
                     vuCount: 10,
@@ -171,7 +171,7 @@ pipeline {
                 def status = executeJMeter (
                   scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
                   resultsDir: "PerfCheck_${env.SERVICE}",
-                  serverUrl: "${env.SERVICE}.${env.STAGE}",
+                  serverUrl: "${env.SERVICE}.${env.STAGE}.${GATEWAY}",
                   serverPort: 80,
                   checkPath: '/health',
                   vuCount: 10,
