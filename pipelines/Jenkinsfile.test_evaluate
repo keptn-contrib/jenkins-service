@@ -52,7 +52,7 @@ pipeline {
             def status = executeJMeter ( 
               scriptName: "${env.SERVICE}/jmeter/basiccheck.jmx", 
               resultsDir: "HealthCheck_${env.SERVICE}",
-              serverUrl: "${env.SERVICE}.${env.STAGE}", 
+              serverUrl: "${env.SERVICE}.${env.STAGE}.$(kubectl get svc istio-ingressgateway -n istio-system -o yaml | yq - r status.loadBalancer.ingress[0].ip).xip.io",
               serverPort: 80,
               checkPath: '/health',
               vuCount: 1,
@@ -130,7 +130,7 @@ pipeline {
                   def status = executeJMeter (
                     scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
                     resultsDir: "PerfCheck_${env.SERVICE}",
-                    serverUrl: "${env.SERVICE}.${env.STAGE}", 
+                    serverUrl: "${env.SERVICE}.${env.STAGE}.$(kubectl get svc istio-ingressgateway -n istio-system -o yaml | yq - r status.loadBalancer.ingress[0].ip).xip.io", 
                     serverPort: 80,
                     checkPath: '/health',
                     vuCount: 10,
@@ -160,7 +160,7 @@ pipeline {
                 def status = executeJMeter (
                   scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
                   resultsDir: "PerfCheck_${env.SERVICE}",
-                  serverUrl: "${env.SERVICE}.${env.STAGE}", 
+                  serverUrl: "${env.SERVICE}.${env.STAGE}.$(kubectl get svc istio-ingressgateway -n istio-system -o yaml | yq - r status.loadBalancer.ingress[0].ip).xip.io", 
                   serverPort: 80,
                   checkPath: '/health',
                   vuCount: 10,
