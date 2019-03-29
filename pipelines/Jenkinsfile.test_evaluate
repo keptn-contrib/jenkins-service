@@ -196,7 +196,7 @@ pipeline {
         }
       }
     }
-    stage('Send test-finished event) {
+    stage('Send test-finished event') {
       steps {
         container("curl") {
           sendCloudEvent(
