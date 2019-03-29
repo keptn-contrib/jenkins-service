@@ -165,7 +165,7 @@ pipeline {
               perfSigDynatraceReports(
                 envId: 'Dynatrace Tenant', 
                 nonFunctionalFailure: 1, 
-                specFile: "${env.SERVICE}/monspec/${env.SERVICE}_perfsig.json"
+                specFile: "${env.SERVICE}/monspec/${env.SERVICE}_perfsig_311.json"
               )
             } else {
               println "No DT creds available"
