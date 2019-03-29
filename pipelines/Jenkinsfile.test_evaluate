@@ -48,12 +48,12 @@ pipeline {
         script {
           if (DEPLOYMENTSTRATEGY == 'blue_green_service') {
             container('kubectl') {
-              sh "kubectl get svc istio-ingressgateway -n istio-system -o yaml >> gateway_all"
+              sh "kubectl get svc istio-ingressgateway -n istio-system -o yaml >> gateway_yaml"
             }
             container('yq') {
-              sh "cat gateway_all | yq - r status.loadBalancer.ingress[0].ip >> gateway"
+              sh "cat gateway_yaml | yq - r status.loadBalancer.ingress[0].ip >> gateway_ip"
               script {
-                GATEWAY = readFile('gateway').trim()
+                GATEWAY = readFile('gateway_ip').trim()
                 GATEWAY = GATEWAY + '.xip.io'
               }
             }
