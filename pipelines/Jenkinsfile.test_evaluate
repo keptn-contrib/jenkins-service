@@ -38,7 +38,7 @@ pipeline {
             sh "rm -rf ${env.SERVICE}"
             sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
             sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUBORG}/${env.SERVICE}"
-            sh "sed -i \"s#ENV_PLACEHOLDER#${env.STAGE}#\" ${env.SERVICE}/monspec/${env.SERVICE}_perfsig.json"
+            sh "sed -i \"s#ENV_PLACEHOLDER#${env.STAGE}#\" ${env.SERVICE}/monspec/${env.SERVICE}_perfsig_311.json"
           }
         }
       }
