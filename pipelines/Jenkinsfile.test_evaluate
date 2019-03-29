@@ -54,7 +54,7 @@ pipeline {
               sh "cat gateway_yaml | yq - r status.loadBalancer.ingress[0].ip >> gateway_ip"
               script {
                 GATEWAY = readFile('gateway_ip').trim()
-                GATEWAY = GATEWAY + '.xip.io'
+                GATEWAY = '.' + GATEWAY + '.xip.io'
               }
             }
           } else {
@@ -69,7 +69,7 @@ pipeline {
             def status = executeJMeter ( 
               scriptName: "${env.SERVICE}/jmeter/basiccheck.jmx", 
               resultsDir: "HealthCheck_${env.SERVICE}",
-              serverUrl: "${env.SERVICE}.${env.STAGE}.${GATEWAY}",
+              serverUrl: "${env.SERVICE}.${env.STAGE}${GATEWAY}",
               serverPort: 80,
               checkPath: '/health',
               vuCount: 1,
@@ -102,7 +102,7 @@ pipeline {
             def status = executeJMeter (
               scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
               resultsDir: "FuncCheck_${env.SERVICE}",
-              serverUrl: "${env.SERVICE}.${env.STAGE}.${GATEWAY}", 
+              serverUrl: "${env.SERVICE}.${env.STAGE}${GATEWAY}", 
               serverPort: 80,
               checkPath: '/health',
               vuCount: 1,
@@ -147,7 +147,7 @@ pipeline {
                   def status = executeJMeter (
                     scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
                     resultsDir: "PerfCheck_${env.SERVICE}",
-                    serverUrl: "${env.SERVICE}.${env.STAGE}.${GATEWAY}",
+                    serverUrl: "${env.SERVICE}.${env.STAGE}${GATEWAY}",
                     serverPort: 80,
                     checkPath: '/health',
                     vuCount: 10,
@@ -177,7 +177,7 @@ pipeline {
                 def status = executeJMeter (
                   scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
                   resultsDir: "PerfCheck_${env.SERVICE}",
-                  serverUrl: "${env.SERVICE}.${env.STAGE}.${GATEWAY}",
+                  serverUrl: "${env.SERVICE}.${env.STAGE}${GATEWAY}",
                   serverPort: 80,
                   checkPath: '/health',
                   vuCount: 10,
