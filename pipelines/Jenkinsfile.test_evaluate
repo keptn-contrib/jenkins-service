@@ -13,7 +13,7 @@ def tagMatchRules = [
   ]
 ]
 
-def GATEWAY = 'UNKNOWN'
+def GATEWAY = ''
 
 pipeline {
   parameters {
@@ -45,6 +45,22 @@ pipeline {
     }
     stage('Run health check') {
       steps {
+        script {
+          if (DEPLOYMENTSTRATEGY == 'blue_green_service') {
+            container('kubectl') {
+              sh "kubectl get svc istio-ingressgateway -n istio-system -o yaml >> gateway_all"
+            }
+            container('yq') {
+              sh "cat gateway_all | yq - r status.loadBalancer.ingress[0].ip >> gateway"
+              script {
+                GATEWAY = readFile('gateway').trim()
+                GATEWAY = GATEWAY + '.xip.io'
+              }
+            }
+          } else {
+            GATEWAY = ''
+          }
+        }
         container('jmeter') {
           sh "rm -rf HealthCheck_${env.SERVICE}"
           sh "rm -f HealthCheck_${env.SERVICE}_result.tlf"
@@ -53,7 +69,7 @@ pipeline {
             def status = executeJMeter ( 
               scriptName: "${env.SERVICE}/jmeter/basiccheck.jmx", 
               resultsDir: "HealthCheck_${env.SERVICE}",
-              serverUrl: "${env.SERVICE}.${env.STAGE}",
+              serverUrl: "${env.SERVICE}.${env.STAGE}.${GATEWAY}",
               serverPort: 80,
               checkPath: '/health',
               vuCount: 1,
@@ -86,7 +102,7 @@ pipeline {
             def status = executeJMeter (
               scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_perfcheck.jmx", 
               resultsDir: "FuncCheck_${env.SERVICE}",
-              serverUrl: "${env.SERVICE}.${env.STAGE}", 
+              serverUrl: "${env.SERVICE}.${env.STAGE}.${GATEWAY}", 
               serverPort: 80,
               checkPath: '/health',
               vuCount: 1,
@@ -110,16 +126,6 @@ pipeline {
         }
       }
       steps {
-        container('kubectl') {
-          sh "kubectl get svc istio-ingressgateway -n istio-system -o yaml >> gateway_all"
-        }
-        container('yq') {
-          sh "cat gateway_all | yq - r status.loadBalancer.ingress[0].ip >> gateway"
-          script {
-            GATEWAY = readFile('gateway').trim()
-            GATEWAY = GATEWAY + '.xip.io'
-          }
-        }
         script {
           container('jmeter') {
             tagMatchRules[0].tags[0].value = "${env.PROJECT}"
