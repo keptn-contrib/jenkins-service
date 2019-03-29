@@ -89,23 +89,6 @@ spec:
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Subscription
 metadata:
-  name: jenkins-tests-finished-subscription
-  namespace: keptn
-spec:
-  channel:
-    apiVersion: eventing.knative.dev/v1alpha1
-    kind: Channel
-    name: tests-finished
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1alpha1
-      kind: Service
-      name: jenkins-service
-
----
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Subscription
-metadata:
   name: jenkins-new-artefact-subscription
   namespace: keptn
 spec:
@@ -118,3 +101,20 @@ spec:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
       name: jenkins-service
+
+#---
+#apiVersion: eventing.knative.dev/v1alpha1
+#kind: Subscription
+#metadata:
+#  name: jenkins-tests-finished-subscription
+#  namespace: keptn
+#spec:
+#  channel:
+#    apiVersion: eventing.knative.dev/v1alpha1
+#    kind: Channel
+#    name: tests-finished
+#  subscriber:
+#    ref:
+#      apiVersion: serving.knative.dev/v1alpha1
+#      kind: Service
+#      name: jenkins-service
