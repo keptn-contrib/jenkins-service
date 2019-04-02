@@ -27,7 +27,7 @@ kubectl create -f config/jenkins/k8s-jenkins-rbac.yml
 kubectl create -f config/jenkins/k8s-jenkins-service-entry.yml
 
 echo "Wait 100s for Jenkins..."
-sleep 100
+sleep 200
 
 # Setup credentials in Jenkins
 echo "--------------------------"
