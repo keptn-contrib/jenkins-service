@@ -37,35 +37,37 @@ pipeline {
         expression {
           return env.EVALUATIONPASSED ==~ 'true'
         }
-        steps {
-          script {
-            container("curl") {
-              sendCloudEvent(
-                receiver: 'event-broker.keptn.svc.cluster.local/keptn',
-                type: 'sh.keptn.events.new-artefact',
-                source: 'Jenkins',
-                shkeptncontext : "${env.KEPTNCONTEXT}",
-                data: [
-                  [key: 'githuborg', value: "${env.GITHUBORG}"],
-                  [key: 'project', value: "${env.PROJECT}"],
-                  [key: 'teststategy', value: "${env.TESTSTRATEGY}"],
-                  [key: 'deploymentstrategy', value: "${env.DEPLOYMENTSTRATEGY}"],
-                  [key: 'stage', value: "${env.STAGE}"],
-                  [key: 'service', value: "${env.SERVICE}"],
-                  [key: 'image', value: "${env.IMAGE}"],
-                  [key: 'tag', value: "${env.TAG}"]
-                ]
-              )
-            }
+      }
+      steps {
+        script {
+          container("curl") {
+            sendCloudEvent(
+              receiver: 'event-broker.keptn.svc.cluster.local/keptn',
+              type: 'sh.keptn.events.new-artefact',
+              source: 'Jenkins',
+              shkeptncontext : "${env.KEPTNCONTEXT}",
+              data: [
+                [key: 'githuborg', value: "${env.GITHUBORG}"],
+                [key: 'project', value: "${env.PROJECT}"],
+                [key: 'teststategy', value: "${env.TESTSTRATEGY}"],
+                [key: 'deploymentstrategy', value: "${env.DEPLOYMENTSTRATEGY}"],
+                [key: 'stage', value: "${env.STAGE}"],
+                [key: 'service', value: "${env.SERVICE}"],
+                [key: 'image', value: "${env.IMAGE}"],
+                [key: 'tag', value: "${env.TAG}"]
+              ]
+            )
           }
         }
       }
     }
     stage('Roll back') {
-      steps {
+      when {
         expression {
           return env.EVALUATIONPASSED ==~ 'false'
         }
+      }
+      steps {
         script {
           if ( env.DEPLOYMENTSTRATEGY ==~ 'blue_green_service' ) {
             container("git"){
