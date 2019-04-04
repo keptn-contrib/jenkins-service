@@ -66,13 +66,15 @@ export class JenkinsController implements interfaces.Controller {
         await jenkinsSvc.deployService(cloudEvent.data, cloudEvent.shkeptncontext);
 
       } else if (request.body.type == 'sh.keptn.events.deployment-finished') {
-        await jenkinsSvc.startTests(cloudEvent.data, cloudEvent.shkeptncontext);
+        await jenkinsSvc.startTests(cloudEvent.data, cloudEvent.shkeptncontext, cloudEvent.time);
 
       } else if (request.body.type == 'sh.keptn.events.tests-finished') {
         await jenkinsSvc.evaluateTests(cloudEvent.data, cloudEvent.shkeptncontext);
 
+      } else if (request.body.type === 'sh.keptn.events.evaluation-done') {
+        await jenkinsSvc.evaluationDone(cloudEvent.data, cloudEvent.shkeptncontext);
       } else {
-        if (request.body.shkeptncontext ) {
+        if (request.body.shkeptncontext) {
           utils.logMessage(request.body.shkeptncontext,
             `This service does not handle the event type ${request.body.eventType}.`);
         }

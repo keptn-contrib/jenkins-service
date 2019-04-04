@@ -90,13 +90,13 @@ export class JenkinsService {
     return deployed;
   }
 
-  async startTests(deployment: DeploymentModel, keptnContext: string) : Promise<boolean> {
+  async startTests(deployment: DeploymentModel, keptnContext: string, timestamp: string = '') : Promise<boolean> {
     let started: boolean = false;
     
     if (deployment.teststategy !== '') {
       new Promise(resolve => {
         jenkins.job.build({
-          name: `/test_evaluate`,
+          name: `/run_tests`,
           parameters: {
             GITHUBORG: deployment.githuborg,
             PROJECT: deployment.project,
@@ -107,6 +107,7 @@ export class JenkinsService {
             IMAGE: deployment.image,
             TAG: deployment.tag,
             KEPTNCONTEXT: keptnContext,
+            TIMESTAMP: timestamp,
           },
         }, function(err) {
           if (err) console.log(err);
@@ -127,6 +128,33 @@ export class JenkinsService {
     new Promise(resolve => {
       jenkins.job.build({
         name: `/evaluate`,
+        parameters: {
+          GITHUBORG: deployment.githuborg,
+          PROJECT: deployment.project,
+          TESTSTRATEGY: deployment.teststategy,
+          DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
+          STAGE: deployment.stage,
+          SERVICE: deployment.service,
+          IMAGE: deployment.image,
+          TAG: deployment.tag,
+          KEPTNCONTEXT: keptnContext,
+        },
+      }, function(err) {
+        if (err) console.log(err);
+        resolve();
+      });
+    });
+    utils.logMessage(keptnContext, `Launched test evaluation of ${deployment.service} in ${deployment.stage}`);
+    
+    return evaluated;
+  }
+
+  async evaluationDone(deployment: DeploymentModel, keptnContext: string) : Promise<boolean> {
+    let evaluated: boolean = false;
+
+    new Promise(resolve => {
+      jenkins.job.build({
+        name: `/evaluation_done`,
         parameters: {
           GITHUBORG: deployment.githuborg,
           PROJECT: deployment.project,
