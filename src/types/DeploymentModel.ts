@@ -14,7 +14,7 @@ export class DeploymentModel {
   image: string;
   tag: string;
   keptnContext: string;
-  evaluationpassend: string;
+  evaluationpassed: string;
 
   app: string;
   version: string;
