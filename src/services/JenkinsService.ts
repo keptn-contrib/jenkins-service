@@ -165,6 +165,7 @@ export class JenkinsService {
           IMAGE: deployment.image,
           TAG: deployment.tag,
           KEPTNCONTEXT: keptnContext,
+          EVALUATIONPASSED: deployment.evaluationpassed,
         },
       }, function(err) {
         if (err) console.log(err);

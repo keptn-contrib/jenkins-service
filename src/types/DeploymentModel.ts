@@ -13,7 +13,8 @@ export class DeploymentModel {
   service: string;
   image: string;
   tag: string;
-  keptnContext: string; 
+  keptnContext: string;
+  evaluationpassend: string;
 
   app: string;
   version: string;
