@@ -110,7 +110,7 @@
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>pipelines/Jenkinsfile.run_tests</scriptPath>
+    <scriptPath>pipelines/Jenkinsfile.evaluation_done</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
