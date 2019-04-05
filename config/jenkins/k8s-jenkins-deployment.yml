@@ -69,7 +69,7 @@ spec:
     spec:
       containers:
       - name: jenkins
-        image: keptn/jenkins:0.3-rc
+        image: keptn/jenkins:0.4-rc
         imagePullPolicy: Always
         env:
           - name: GITHUB_USER_EMAIL
