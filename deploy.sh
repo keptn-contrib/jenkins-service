@@ -69,13 +69,9 @@ echo "--------------------------"
 # Create secret and deploy jenkins-service
 kubectl create secret generic -n keptn jenkins-secret --from-literal=jenkinsurl="jenkins.keptn.svc.cluster.local" --from-literal=user="$JENKINS_USER" --from-literal=password="$JENKINS_PASSWORD"
 
-rm -f config/service/gen/service.yaml
 
-cat config/service/service.yaml | \
-  sed 's~REGISTRY_URI_PLACEHOLDER~'"$REGISTRY_URI"'~' >> config/service/gen/service.yaml
-
-kubectl delete -f config/service/gen/service.yaml --ignore-not-found
-kubectl apply -f config/service/gen/service.yaml
+kubectl delete -f config/service/service.yaml --ignore-not-found
+kubectl apply -f config/service/service.yaml
 
 # Deploy Tiller for Helm
 kubectl -n kube-system create serviceaccount tiller

@@ -8,6 +8,23 @@ metadata:
 spec:
   runLatest:
     configuration:
+      build:
+        apiVersion: build.knative.dev/v1alpha1
+        kind: Build
+        metadata:
+          name: service-builder
+          namespace: keptn
+        spec:
+          serviceAccountName: build-bot
+          source:
+            git:
+              url: https://github.com/keptn/jenkins-service.git
+              revision: master
+          template:
+            name: kaniko
+            arguments:
+              - name: IMAGE
+                value: docker-registry.keptn.svc.cluster.local:5000/keptn/jenkins-service:latest
       revisionTemplate:
         metadata:
           annotations:
@@ -15,7 +32,7 @@ spec:
             autoscaling.knative.dev/minScale: "1"
         spec:
           container:
-            image: keptn/jenkins-service:0.2-rc
+            image: REGISTRY_URI_PLACEHOLDER:5000/keptn/jenkins-service:latest
             env: 
             - name: JENKINS_URL
               valueFrom:
