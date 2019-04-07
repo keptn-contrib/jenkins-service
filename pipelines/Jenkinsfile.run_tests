@@ -85,7 +85,7 @@ pipeline {
             def status = executeJMeter (
               scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_load.jmx", 
               resultsDir: "FuncCheck_${env.SERVICE}",
-              serverUrl: "${env.SERVICE}.${env.STAGE}", 
+              serverUrl: "${env.SERVICE}.${env.STAGE}.svc.cluster.local", 
               serverPort: 80,
               checkPath: '/health',
               vuCount: 1,
