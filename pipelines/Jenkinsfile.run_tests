@@ -13,6 +13,8 @@ def tagMatchRules = [
   ]
 ]
 
+def GATEWAY = ''
+
 pipeline {
   parameters {
     string(name: 'GITHUBORG', defaultValue: '', description: 'The name of the GitHub organization.', trim: true)
@@ -109,13 +111,23 @@ pipeline {
         }
       }
       steps {
+        container('kubectl') {
+          sh "kubectl get svc istio-ingressgateway -n istio-system -o yaml >> gateway_all"
+        }
+        container('yq') {
+          sh "cat gateway_all | yq - r status.loadBalancer.ingress[0].ip >> gateway"
+          script {
+            GATEWAY = readFile('gateway').trim()
+            GATEWAY = GATEWAY + '.xip.io'
+          }
+        }
         script {
           container('jmeter') {
             script {
               def status = executeJMeter (
                 scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_load.jmx", 
                 resultsDir: "PerfCheck_${env.SERVICE}",
-                serverUrl: "${env.SERVICE}.${env.STAGE}.svc.cluster.local", 
+                serverUrl: "${env.SERVICE}.${env.STAGE}.${GATEWAY}", 
                 serverPort: 80,
                 checkPath: '/health',
                 vuCount: 10,
