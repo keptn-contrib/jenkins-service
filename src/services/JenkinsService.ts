@@ -21,70 +21,29 @@ export class JenkinsService {
     return JenkinsService.instance;
   }
 
-  async newArtefact(deployment: DeploymentModel) : Promise<boolean> {
-    const deployed: boolean = false;
-
-    if (deployment.version) {
-      new Promise(resolve => {
-        jenkins.job.build({
-          name: `/new-artefact`,
-          parameters: {
-            GITHUBORG: deployment.githuborg,
-            PROJECT: deployment.project,
-            STAGE: deployment.stage,
-            APP: deployment.app,
-            VERSION: deployment.version
-          },
-        }, function(err) {
-          if (err) console.log(err);
-          resolve();
-        });
-      });
-      console.log('[jenkins-service]: New artefact pipeline triggered.');
-    }
-    return deployed;
-  }
-
   async deployService(deployment: DeploymentModel, keptnContext: string) : Promise<boolean> {
     const deployed: boolean = false;
 
-    if (deployment.image) {
-      new Promise(resolve => {
-        jenkins.job.build({
-          name: `/deploy`,
-          parameters: {
-            GITHUBORG: deployment.githuborg,
-            PROJECT: deployment.project,
-            TESTSTRATEGY: deployment.teststategy,
-            DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
-            STAGE: deployment.stage,
-            SERVICE: deployment.service,
-            IMAGE: deployment.image,
-            TAG: deployment.tag,
-            KEPTNCONTEXT: keptnContext,
-          },
-        }, function(err) {
-          if (err) console.log(err);
-          resolve();
-        });
+    new Promise(resolve => {
+      jenkins.job.build({
+        name: `/deploy`,
+        parameters: {
+          GITHUBORG: deployment.githuborg,
+          PROJECT: deployment.project,
+          TESTSTRATEGY: deployment.teststategy,
+          DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
+          STAGE: deployment.stage,
+          SERVICE: deployment.service,
+          IMAGE: deployment.image,
+          TAG: deployment.tag,
+          KEPTNCONTEXT: keptnContext,
+        },
+      }, function(err) {
+        if (err) console.log(err);
+        resolve();
       });
-    } else if (deployment.version) {
-      new Promise(resolve => {
-        jenkins.job.build({
-          name: `/deploy-cf`,
-          parameters: {
-            GITHUBORG: deployment.githuborg,
-            PROJECT: deployment.project,
-            STAGE: deployment.stage,
-            APP: deployment.app,
-            VERSION: deployment.version,
-          },
-        }, function(err) {
-          if (err) console.log(err);
-          resolve();
-        });
-      });
-    }
+    });
+
     utils.logMessage(keptnContext, `Launched deployment pipeline for ${deployment.service} in ${deployment.stage}.`);
 
     return deployed;
