@@ -49,20 +49,20 @@ pipeline {
         container('kubectl') {
           if ( env.DEPLOYMENTSTRATEGY ==~ 'blue_green_service' ) {
             script {
-              def status = waitForDeployment (
+              def status_blue = waitForDeployment (
                 deploymentName: "${env.SERVICE}-blue",
                 environment: "${env.STAGE}"
               )
-              if(status !=0 ){
+              if(status_blue !=0 ){
                 currentBuild.result = 'FAILED'
                 error "Deployment did not finish before timeout."
               }
               
-              def status = waitForDeployment (
+              def status_green = waitForDeployment (
                 deploymentName: "${env.SERVICE}-green",
                 environment: "${env.STAGE}"
               )
-              if(status !=0 ){
+              if(status_green !=0 ){
                 currentBuild.result = 'FAILED'
                 error "Deployment did not finish before timeout."
               }
