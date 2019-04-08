@@ -55,7 +55,7 @@ pipeline {
               )
               if(status_blue !=0 ){
                 currentBuild.result = 'FAILED'
-                error "Deployment did not finish before timeout."
+                error "Deployment - blue - did not finish before timeout."
               }
               
               def status_green = waitForDeployment (
@@ -64,7 +64,7 @@ pipeline {
               )
               if(status_green !=0 ){
                 currentBuild.result = 'FAILED'
-                error "Deployment did not finish before timeout."
+                error "Deployment - green - did not finish before timeout."
               }
             } else {
               def status = waitForDeployment (
