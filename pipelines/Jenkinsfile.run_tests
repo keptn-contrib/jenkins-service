@@ -45,6 +45,20 @@ pipeline {
     }
     stage('Run health check') {
       steps {
+        echo "Waiting for the service to start..."
+        container('kubectl') {
+          script {
+            def status = waitForDeployment (
+              deploymentName: "${env.SERVICE}",
+              environment: "${env.STAGE}"
+            )
+            if(status !=0 ){
+              currentBuild.result = 'FAILED'
+              error "Deployment did not finish before timeout."
+            }
+          }
+        }
+
         container('jmeter') {
           sh "rm -rf HealthCheck_${env.SERVICE}"
           sh "rm -f HealthCheck_${env.SERVICE}_result.tlf"
