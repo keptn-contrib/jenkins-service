@@ -2,7 +2,7 @@
 
 This service is designed to use Jenkins for executing various continuous delivery tasks. Thus, this service can make use of Jenkins jobs to:
 * deploy a service to a particular stage
-* execute tests for a service
+* execute tests for a deployment
 * promote the deployment to the next stage
 
 To trigger these jobs, the service has subscriptions to event channels. In more details, the current implementation of the service listens to CloudEvents from type:
