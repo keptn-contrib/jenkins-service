@@ -1,14 +1,14 @@
 # Keptn Jenkins Service
 
 This service is designed to use Jenkins for executing various continuous delivery tasks. Thus, this service can make use of Jenkins jobs to:
-* deploy a service to a particular stage,
-* execute tests for a service, and
-* evaluate the test result.
+* deploy a service to a particular stage
+* execute tests for a service
+* promote the deployment to the next stage
 
 To trigger these jobs, the service has subscriptions to event channels. In more details, the current implementation of the service listens to CloudEvents from type:
 * `sh.keptn.events.configuration-changed`: When receiving this event, the service deploys an application based on the new configuration.
 * `sh.keptn.events.deployment-finished`: When receiving this event, the service executes a test for a deployed application.
-* `sh.keptn.events.tests-finished`: When receiving this event, the service starts the evaluation of the test result and finally promotes the application to the next stage in case the test passed.
+* `sh.keptn.events.evaluation-done`: When receiving this event, the service verifies the evaluation to decide whether the deployment can be promoted to the next stage.
 
 ## Secret for credentials
 During the setup of the Jenkins, a secret is created that contains key-value pairs for the Jenkins URL, Jenkins user, and password:
@@ -21,9 +21,8 @@ The `docker-jenkins` folder contains a `Dockerfile` and all artifacts for buildi
 * **Performance Signature Plugin 3.1.1**
 * **Jenkins jobs**:
   * deploy
-  * evaluate
-  * test
-  * test_evaluate
+  * run_test
+  * evaluation_done
 
 ## Install service <a id="install"></a>
 
