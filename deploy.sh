@@ -26,7 +26,7 @@ kubectl create -f config/jenkins/gen/k8s-jenkins-deployment.yml
 kubectl create -f config/jenkins/k8s-jenkins-rbac.yml
 kubectl create -f config/jenkins/k8s-jenkins-service-entry.yml
 
-echo "Wait 100s for Jenkins..."
+echo "Wait 200s for Jenkins..."
 sleep 200
 
 # Setup credentials in Jenkins
@@ -68,7 +68,6 @@ echo "--------------------------"
 
 # Create secret and deploy jenkins-service
 kubectl create secret generic -n keptn jenkins-secret --from-literal=jenkinsurl="jenkins.keptn.svc.cluster.local" --from-literal=user="$JENKINS_USER" --from-literal=password="$JENKINS_PASSWORD"
-
 
 kubectl delete -f config/service/service.yaml --ignore-not-found
 kubectl apply -f config/service/service.yaml
