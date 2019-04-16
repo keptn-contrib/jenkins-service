@@ -37,10 +37,8 @@ echo "--------------------------"
 # Export Jenkins route in a variable
 export JENKINS_URL="jenkins.keptn.$GATEWAY.xip.io"
 
-curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials \
-  --retry 8 \
-  --user $JENKINS_USER:$JENKINS_PASSWORD \
-  --data-urlencode 'json={
+curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
+--data-urlencode 'json={
   "": "0",
   "credentials": {
     "scope": "GLOBAL",
@@ -52,10 +50,8 @@ curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredent
   }
 }'
 
-curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials \
-  --retry 8 \
-  --user $JENKINS_USER:$JENKINS_PASSWORD \
-  --data-urlencode 'json={
+curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
+--data-urlencode 'json={
   "": "0",
   "credentials": {
     "scope": "GLOBAL",
