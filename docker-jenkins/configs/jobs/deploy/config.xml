@@ -13,6 +13,7 @@
         <string>STAGE</string>
         <string>SERVICE</string>
         <string>TAG</string>
+        <string>KEPTNCONTEXT</string>
         <string>TESTSTRATEGY</string>
       </parameters>
       <options/>
@@ -68,6 +69,12 @@
         <hudson.model.StringParameterDefinition>
           <name>TAG</name>
           <description>The tag of the new service.</description>
+          <defaultValue></defaultValue>
+          <trim>true</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>KEPTNCONTEXT</name>
+          <description>An id used for keptn tracing</description>
           <defaultValue></defaultValue>
           <trim>true</trim>
         </hudson.model.StringParameterDefinition>
