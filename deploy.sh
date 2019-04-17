@@ -37,7 +37,8 @@ echo "--------------------------"
 # Export Jenkins route in a variable
 export JENKINS_URL="jenkins.keptn.$GATEWAY.xip.io"
 
-curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
+curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials \
+--user $JENKINS_USER:$JENKINS_PASSWORD \
 --data-urlencode 'json={
   "": "0",
   "credentials": {
@@ -48,9 +49,13 @@ curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredent
     "description": "Token used by Jenkins to access the GitHub repositories",
     "$class": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl"
   }
-}'
+}' \
+--retry 8 \
+--retry-connrefused
 
-curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
+
+curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials \
+--user $JENKINS_USER:$JENKINS_PASSWORD \
 --data-urlencode 'json={
   "": "0",
   "credentials": {
@@ -60,7 +65,9 @@ curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredent
     "description": "Dynatrace API Token used by the Performance Signature plugin",
     "$class": "de.tsystems.mms.apm.performancesignature.dynatracesaas.model.DynatraceApiTokenImpl"
   }
-}'
+}' \
+--retry 8 \
+--retry-connrefused
 
 echo "--------------------------"
 echo "End setup credentials in Jenkins "
