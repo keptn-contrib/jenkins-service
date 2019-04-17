@@ -83,5 +83,3 @@ kubectl apply -f config/service/service.yaml
 kubectl -n kube-system create serviceaccount tiller
 kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
 helm init --service-account tiller
-
-#kubectl -n kube-system  rollout status deploy/tiller-deploy
