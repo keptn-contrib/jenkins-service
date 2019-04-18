@@ -30,7 +30,7 @@ export class JenkinsService {
         parameters: {
           GITHUBORG: deployment.githuborg,
           PROJECT: deployment.project,
-          TESTSTRATEGY: deployment.teststategy,
+          TESTSTRATEGY: deployment.teststrategy,
           DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
           STAGE: deployment.stage,
           SERVICE: deployment.service,
@@ -52,14 +52,14 @@ export class JenkinsService {
   async startTests(deployment: DeploymentModel, keptnContext: string, timestamp: string = '') : Promise<boolean> {
     let started: boolean = false;
     
-    if (deployment.teststategy !== '') {
+    if (deployment.teststrategy !== '') {
       new Promise(resolve => {
         jenkins.job.build({
           name: `/run_tests`,
           parameters: {
             GITHUBORG: deployment.githuborg,
             PROJECT: deployment.project,
-            TESTSTRATEGY: deployment.teststategy,
+            TESTSTRATEGY: deployment.teststrategy,
             DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
             STAGE: deployment.stage,
             SERVICE: deployment.service,
@@ -90,7 +90,7 @@ export class JenkinsService {
         parameters: {
           GITHUBORG: deployment.githuborg,
           PROJECT: deployment.project,
-          TESTSTRATEGY: deployment.teststategy,
+          TESTSTRATEGY: deployment.teststrategy,
           DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
           STAGE: deployment.stage,
           SERVICE: deployment.service,
@@ -117,7 +117,7 @@ export class JenkinsService {
         parameters: {
           GITHUBORG: deployment.githuborg,
           PROJECT: deployment.project,
-          TESTSTRATEGY: deployment.teststategy,
+          TESTSTRATEGY: deployment.teststrategy,
           DEPLOYMENTSTRATEGY: deployment.deploymentstrategy,
           STAGE: deployment.stage,
           SERVICE: deployment.service,

@@ -7,7 +7,7 @@ import { ApiModel, ApiModelProperty, SwaggerDefinitionConstant } from 'swagger-e
 export class DeploymentModel {
   githuborg: string;
   project: string;
-  teststategy: string;
+  teststrategy: string;
   deploymentstrategy: string;
   stage: string;
   service: string;
