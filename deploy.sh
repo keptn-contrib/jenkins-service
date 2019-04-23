@@ -4,7 +4,7 @@ JENKINS_USER=$2
 JENKINS_PASSWORD=$3
 GITHUB_USER_EMAIL=$4
 GITHUB_ORGANIZATION=$5
-DT_TENANT_ID=$6
+GITHUB_PERSONAL_ACCESS_TOKEN=$6
 DT_API_TOKEN=$7
 DT_TENANT_URL=$8
 
@@ -26,7 +26,7 @@ kubectl create -f config/jenkins/gen/k8s-jenkins-deployment.yml
 kubectl create -f config/jenkins/k8s-jenkins-rbac.yml
 kubectl create -f config/jenkins/k8s-jenkins-service-entry.yml
 
-echo "Wait 100s for Jenkins..."
+echo "Wait 200s for Jenkins..."
 sleep 200
 
 # Setup credentials in Jenkins
@@ -37,7 +37,8 @@ echo "--------------------------"
 # Export Jenkins route in a variable
 export JENKINS_URL="jenkins.keptn.$GATEWAY.xip.io"
 
-curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
+curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials \
+--user $JENKINS_USER:$JENKINS_PASSWORD \
 --data-urlencode 'json={
   "": "0",
   "credentials": {
@@ -48,9 +49,13 @@ curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredent
     "description": "Token used by Jenkins to access the GitHub repositories",
     "$class": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl"
   }
-}'
+}' \
+--retry 8 \
+--retry-connrefused
 
-curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials --user $JENKINS_USER:$JENKINS_PASSWORD \
+
+curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials \
+--user $JENKINS_USER:$JENKINS_PASSWORD \
 --data-urlencode 'json={
   "": "0",
   "credentials": {
@@ -60,7 +65,9 @@ curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredent
     "description": "Dynatrace API Token used by the Performance Signature plugin",
     "$class": "de.tsystems.mms.apm.performancesignature.dynatracesaas.model.DynatraceApiTokenImpl"
   }
-}'
+}' \
+--retry 8 \
+--retry-connrefused
 
 echo "--------------------------"
 echo "End setup credentials in Jenkins "
@@ -69,7 +76,6 @@ echo "--------------------------"
 # Create secret and deploy jenkins-service
 kubectl create secret generic -n keptn jenkins-secret --from-literal=jenkinsurl="jenkins.keptn.svc.cluster.local" --from-literal=user="$JENKINS_USER" --from-literal=password="$JENKINS_PASSWORD"
 
-
 kubectl delete -f config/service/service.yaml --ignore-not-found
 kubectl apply -f config/service/service.yaml
 
@@ -77,5 +83,3 @@ kubectl apply -f config/service/service.yaml
 kubectl -n kube-system create serviceaccount tiller
 kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
 helm init --service-account tiller
-
-#kubectl -n kube-system  rollout status deploy/tiller-deploy

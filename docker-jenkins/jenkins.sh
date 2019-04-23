@@ -11,7 +11,7 @@ sed -i 's/GITHUB_USER_EMAIL_PLACEHOLDER/'"$GITHUB_USER_EMAIL"'/' $JENKINS_HOME/c
 sed -i 's/GITHUB_ORGANIZATION_PLACEHOLDER/'"$GITHUB_ORGANIZATION"'/' $JENKINS_HOME/config.xml
 sed -i 's/DT_TENANT_URL_PLACEHOLDER/'"$DT_TENANT_URL"'/' $JENKINS_HOME/config.xml
 sed -i 's/DT_API_TOKEN_PLACEHOLDER/'"$DT_API_TOKEN"'/' $JENKINS_HOME/config.xml
-sed -i 's/DT_TENANT_URL_PLACEHOLDER/'"$DT_TENANT_URL"'/' $JENKINS_HOME/de.tsystems.mms.apm.performancesignature.dynatracesaas.DynatraceGlobalConfiguration.xml
+sed -i 's~DT_TENANT_URL_PLACEHOLDER~'"$DT_TENANT_URL"'~' $JENKINS_HOME/de.tsystems.mms.apm.performancesignature.dynatracesaas.DynatraceGlobalConfiguration.xml
 
 # if `docker run` first argument start with `--` the user is passing jenkins launcher arguments
 if [[ $# -lt 1 ]] || [[ "$1" == "--"* ]]; then

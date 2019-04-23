@@ -32,14 +32,14 @@ The `docker-jenkins` folder contains a `Dockerfile` and all artifacts for buildi
     * JENKINS_PASSWORD - Password of Jenkins user
     * GITHUB_USER_EMAIL - Email of GitHub user
     * GITHUB_ORGANIZATION - GitHub organization used by keptn
-    * DT_TENANT_ID (optional) - Dynatrace tenant ID
+    * GITHUB_PERSONAL_ACCESS_TOKEN - Personal access token from GitHub user
     * DT_API_TOKEN (optional) - Dynatrace API token
     * DT_TENANT_URL (optional) - Dynatrace tenant URL
 
 1. Run the `deploy.sh` script as shown below: 
 
     ```console
-    $ ./deploy.sh REGISTRY_URI JENKINS_USER JENKINS_PASSWORD GITHUB_USER_EMAIL GITHUB_ORGANIZATION DT_TENANT_ID DT_API_TOKEN DT_TENANT_URL
+    $ ./deploy.sh REGISTRY_URI JENKINS_USER JENKINS_PASSWORD GITHUB_USER_EMAIL GITHUB_ORGANIZATION GITHUB_PERSONAL_ACCESS_TOKEN DT_API_TOKEN DT_TENANT_URL
     ```
 
 1. To verify the installation, execute the following `kubectl` commands: 
