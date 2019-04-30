@@ -26,16 +26,16 @@ cat config/jenkins/k8s-jenkins-deployment.yml | \
   sed 's~DT_TENANT_URL_PLACEHOLDER~'"$DT_TENANT_URL"'~' | \
   sed 's~DT_API_TOKEN_PLACEHOLDER~'"$DT_API_TOKEN"'~' >> config/jenkins/gen/k8s-jenkins-deployment.yml
 
-kubectl create -f config/jenkins/k8s-jenkins-pvcs.yml 
+kubectl apply -f config/jenkins/k8s-jenkins-pvcs.yml 
 verify_kubectl $? "Creating persistent volume claim for jenkins failed."
 
-kubectl create -f config/jenkins/gen/k8s-jenkins-deployment.yml
+kubectl apply -f config/jenkins/gen/k8s-jenkins-deployment.yml
 verify_kubectl $? "Creating deployment for jenkins failed."
 
-kubectl create -f config/jenkins/k8s-jenkins-rbac.yml
+kubectl apply -f config/jenkins/k8s-jenkins-rbac.yml
 verify_kubectl $? "Creating cluster role binding for jenkins failed."
 
-kubectl create -f config/jenkins/k8s-jenkins-service-entry.yml
+kubectl apply -f config/jenkins/k8s-jenkins-service-entry.yml
 verify_kubectl $? "Creating service entries for jenkins failed."
 
 wait_for_deployment_in_namespace "jenkins" "keptn" 
