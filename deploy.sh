@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 REGISTRY_URL=$1
 JENKINS_USER=$2
 JENKINS_PASSWORD=$3
