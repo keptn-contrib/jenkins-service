@@ -40,8 +40,8 @@ verify_kubectl $? "Creating service entries for jenkins failed."
 
 wait_for_deployment_in_namespace "jenkins" "keptn" 
 
-echo "Wait 200s for Jenkins..."
-sleep 200
+echo "Wait 100s for Jenkins..."
+sleep 100
 
 JENKINS_URL="jenkins.keptn.$GATEWAY.xip.io"
 
@@ -110,8 +110,6 @@ if [[ $RETRY == $RETRY_MAX ]]; then
 fi
 
 # Create secret and deploy jenkins-service
-kubectl create secret generic -n keptn jenkins-secret --from-literal=jenkinsurl="jenkins.keptn.svc.cluster.local" --from-literal=user="admin" --from-literal=password="AiTx4u8VyUV8tCKk"
-
 kubectl create secret generic -n keptn jenkins-secret --from-literal=jenkinsurl="jenkins.keptn.svc.cluster.local" --from-literal=user="$JENKINS_USER" --from-literal=password="$JENKINS_PASSWORD"
 verify_kubectl $? "Creating secret for jenkins-service failed."
 
