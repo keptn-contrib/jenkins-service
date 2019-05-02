@@ -81,21 +81,34 @@ pipeline {
             tagMatchRules[0].tags[1].value = "${env.SERVICE}"
             tagMatchRules[0].tags[2].value = "${env.STAGE}"
             
-            String dtTenant = "${DT_TENANT_URL}"
-            if (dtTenant != null && (dtTenant.endsWith("dynatrace.com") || dtTenant.endsWith("dynatrace.com/"))) {
-              def status = pushDynatraceDeploymentEvent (
-                tagRule : tagMatchRules,
-                deploymentVersion : "${env.TAG}",
-                deploymentName : "${env.SERVICE}",
-                deploymentProject : "${env.PROJECT}", 
-                customProperties : [
-                  [key: 'Jenkins Build Number', value: "${env.BUILD_ID}"],
-                ]
-              )
+            if (env.DT_TENANT_URL) {
+              String dtTenant = "${env.DT_TENANT_URL}"
+
+              if (dtTenant != null && (dtTenant.endsWith("dynatrace.com") || dtTenant.endsWith("dynatrace.com/"))) {
+                def status = pushDynatraceDeploymentEvent (
+                  tagRule : tagMatchRules,
+                  deploymentVersion : "${env.TAG}",
+                  deploymentName : "Deploy ${env.SERVICE} (${env.TAG}) with strategy ${env.DEPLOYMENTSTRATEGY}",
+                  deploymentProject : "${env.PROJECT}", 
+                  customProperties : [
+                    [key: 'Jenkins build number', value: "${env.BUILD_ID}"],
+                    [key: 'GitHub org', value: "${env.GITHUBORG}"],
+                    [key: 'Project', value: "${env.PROJECT}"],
+                    [key: 'Test strategy', value: "${env.TESTSTRATEGY}"],
+                    [key: 'Deployment strategy', value: "${env.DEPLOYMENTSTRATEGY}"],
+                    [key: 'Stage', value: "${env.STAGE}"],
+                    [key: 'Service', value: "${env.SERVICE}"],
+                    [key: 'Image', value: "${env.IMAGE}"],
+                    [key: 'Tag', value: "${env.TAG}"],
+                    [key: 'keptn context', value: "${env.KEPTNCONTEXT}"]  
+                  ]
+                )
+              } else {
+                println "Value of DT_TENANT_URL not valid, do not send event."
+              }
             } else {
-              println "No DT creds available"
+              println "No DT_TENANT_URL available, do not send event."
             }
-            
           }
         }
       }
@@ -111,7 +124,7 @@ pipeline {
             data: [
               [key: 'githuborg', value: "${env.GITHUBORG}"],
               [key: 'project', value: "${env.PROJECT}"],
-              [key: 'teststategy', value: "${env.TESTSTRATEGY}"],
+              [key: 'teststrategy', value: "${env.TESTSTRATEGY}"],
               [key: 'deploymentstrategy', value: "${env.DEPLOYMENTSTRATEGY}"],
               [key: 'stage', value: "${env.STAGE}"],
               [key: 'service', value: "${env.SERVICE}"],
