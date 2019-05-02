@@ -773,7 +773,6 @@
       <addMasterProxyEnvVars>false</addMasterProxyEnvVars>
       <capOnlyOnAlivePods>false</capOnlyOnAlivePods>
       <namespace>keptn</namespace>
-      <jenkinsUrl>http://jenkins.keptn.svc.cluster.local:80</jenkinsUrl>
       <jenkinsTunnel>jenkins.keptn.svc.cluster.local:50000</jenkinsTunnel>
       <containerCap>10</containerCap>
       <retentionTimeout>5</retentionTimeout>
@@ -807,17 +806,13 @@
           <default>
             <comparator class="hudson.util.CaseInsensitiveComparator"/>
           </default>
-          <int>5</int>
+          <int>3</int>
           <string>DOCKER_REGISTRY_URL</string>
           <string>DOCKER_REGISTRY_URL_PLACEHOLDER</string>
           <string>GITHUB_USER_EMAIL</string>
           <string>GITHUB_USER_EMAIL_PLACEHOLDER</string>
           <string>GITHUB_ORGANIZATION</string>
           <string>GITHUB_ORGANIZATION_PLACEHOLDER</string>
-          <string>DT_TENANT_URL</string>
-          <string>https://DT_TENANT_URL_PLACEHOLDER</string>
-          <string>DT_API_TOKEN</string>
-          <string>DT_API_TOKEN_PLACEHOLDER</string>
         </tree-map>
       </envVars>
     </hudson.slaves.EnvironmentVariablesNodeProperty>
