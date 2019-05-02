@@ -1,6 +1,7 @@
 # Release Notes 0.2.0
 
 ## New Features
+- new Jenkins image: keptn/jenkins:0.5.0
 
 ## Fixed Issues
 - Jenkins URL removed from Jenkins configuration
