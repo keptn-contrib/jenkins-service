@@ -7,8 +7,6 @@ GITHUB_USER_NAME=$4
 GITHUB_USER_EMAIL=$5
 GITHUB_ORGANIZATION=$6
 GITHUB_PERSONAL_ACCESS_TOKEN=$7
-#DT_API_TOKEN=$8
-#DT_TENANT_URL=$9
 
 source ./deploy_utils.sh
 
@@ -23,8 +21,6 @@ cat config/jenkins/k8s-jenkins-deployment.yml | \
   sed 's~GITHUB_USER_EMAIL_PLACEHOLDER~'"$GITHUB_USER_EMAIL"'~' | \
   sed 's~GITHUB_ORGANIZATION_PLACEHOLDER~'"$GITHUB_ORGANIZATION"'~' | \
   sed 's~DOCKER_REGISTRY_IP_PLACEHOLDER~'"$REGISTRY_URL"'~' >> config/jenkins/gen/k8s-jenkins-deployment.yml
-  #sed 's~DT_TENANT_URL_PLACEHOLDER~'"$DT_TENANT_URL"'~' | \
-  #sed 's~DT_API_TOKEN_PLACEHOLDER~'"$DT_API_TOKEN"'~' >> config/jenkins/gen/k8s-jenkins-deployment.yml
 
 kubectl apply -f config/jenkins/k8s-jenkins-pvcs.yml 
 verify_kubectl $? "Creating persistent volume claim for jenkins failed."
@@ -45,6 +41,7 @@ sleep 100
 
 JENKINS_URL="jenkins.keptn.$GATEWAY.xip.io"
 
+# Configure Jenkins with GitHub credentials
 RETRY=0; RETRY_MAX=12; 
 
 while [[ $RETRY -lt $RETRY_MAX ]]; do
@@ -76,38 +73,6 @@ if [[ $RETRY == $RETRY_MAX ]]; then
   print_error "Git credentials could not be created in Jenkins."
   exit 1
 fi
-
-## Performance signature plugin will be removed soon
-# RETRY=0; RETRY_MAX=12; 
-
-# while [[ $RETRY -lt $RETRY_MAX ]]; do
-#   curl -X POST http://$JENKINS_URL/credentials/store/system/domain/_/createCredentials \
-#     --user $JENKINS_USER:$JENKINS_PASSWORD \
-#     --data-urlencode 'json={
-#       "": "0",
-#       "credentials": {
-#         "scope": "GLOBAL",
-#         "id": "perfsig-api-token",
-#         "apiToken": "'$DT_API_TOKEN'",
-#         "description": "Dynatrace API Token used by the Performance Signature plugin",
-#         "$class": "de.tsystems.mms.apm.performancesignature.dynatracesaas.model.DynatraceApiTokenImpl"
-#       }
-#     }'
-
-#   if [[ $? == '0' ]]
-#   then
-#     print_debug "Performance signature plugin in Jenkins configured, continue installation."
-#     break
-#   fi
-#   RETRY=$[$RETRY+1]
-#   print_debug "Retry: ${RETRY}/${RETRY_MAX} - Wait 10s for configuring Performance signature plugin in Jenkins ..."
-#   sleep 10
-# done
-
-# if [[ $RETRY == $RETRY_MAX ]]; then
-#   print_error "Performance signature plugin could not be configured in Jenkins."
-#   exit 1
-# fi
 
 # Create secret and deploy jenkins-service
 kubectl create secret generic -n keptn jenkins-secret --from-literal=jenkinsurl="jenkins.keptn.svc.cluster.local" --from-literal=user="$JENKINS_USER" --from-literal=password="$JENKINS_PASSWORD"
