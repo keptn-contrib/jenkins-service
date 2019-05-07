@@ -18,6 +18,7 @@ During the setup of the Jenkins, a secret is created that contains key-value pai
 
 ## Docker Jenkins
 The `docker-jenkins` folder contains a `Dockerfile` and all artifacts for building the Jenkins container image. Characteristics of this Jenkins image are:
+* **Performance Signature Plugin 3.1.1**
 * **Jenkins jobs**:
   * deploy
   * run_test
