@@ -39,7 +39,7 @@ jobs:
     - docker push "${SERVICE_IMAGE}:${GIT_SHA}"
     - docker push "${SERVICE_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
     - | 
-      if [[ $CHANGED_FILES == *_"$JENKINS_FOLDER"_*  ]]; then
+      if [[ $CHANGED_FILES == *"${JENKINS_FOLDER}"*  ]]; then
         echo "Build Jenkins image"
         cd docker-jenkins
         docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
