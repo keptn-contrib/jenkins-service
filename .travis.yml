@@ -46,8 +46,7 @@ jobs:
         docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
         docker push "${JENKINS_IMAGE}:${GIT_SHA}"
         docker push "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
-      fi 
-
+      fi
   - stage: develop
     if: branch = develop AND NOT type = pull_request
     script:
@@ -59,14 +58,17 @@ jobs:
     - docker push "${SERVICE_IMAGE}:${GIT_SHA}"
     - docker push "${SERVICE_IMAGE}:${DATE}"
     - docker push "${SERVICE_IMAGE}:latest"
-    - echo "Build Jenkins image"
-    - cd docker-jenkins
-    - docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
-    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${DATE}"
-    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:latest"
-    - docker push "${JENKINS_IMAGE}:${GIT_SHA}"
-    - docker push "${JENKINS_IMAGE}:${DATE}"
-    - docker push "${JENKINS_IMAGE}:latest"
+    - | 
+      if [[ $CHANGED_FILES == *"${JENKINS_FOLDER}"*  ]]; then
+        echo "Build Jenkins image"
+        cd docker-jenkins
+        docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
+        docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${DATE}"
+        docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:latest"
+        docker push "${JENKINS_IMAGE}:${GIT_SHA}"
+        docker push "${JENKINS_IMAGE}:${DATE}"
+        docker push "${JENKINS_IMAGE}:latest"
+      fi
   - stage: release-branch
     if: branch =~ ^release.*$ AND NOT type = pull_request
     script:
