@@ -19,7 +19,7 @@ before_install:
 - REPO_URL="$(git remote get-url --all origin)"
 - LAST_COMMIT="$(git log -1 --oneline)"
 - CHANGED_FILES=($(git diff --name-only $TRAVIS_COMMIT_RANGE | paste -sd "," ) )
-- echo "Changed files >$CHANGED_FILES"
+- echo "Changed files>$CHANGED_FILES"
 - ./writeManifest.sh
 - cp MANIFEST ./docker-jenkins/MANIFEST
 - cat MANIFEST
@@ -40,12 +40,12 @@ jobs:
     - docker push "${SERVICE_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
     - | 
       if [[ $CHANGED_FILES == *_"$JENKINS_FOLDER"_*  ]]; then
-        - echo "Build Jenkins image"
-        - cd docker-jenkins
-        - docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
-        - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
-        - docker push "${JENKINS_IMAGE}:${GIT_SHA}"
-        - docker push "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
+        echo "Build Jenkins image"
+        cd docker-jenkins
+        docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
+        docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
+        docker push "${JENKINS_IMAGE}:${GIT_SHA}"
+        docker push "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
       fi 
 
   - stage: develop
