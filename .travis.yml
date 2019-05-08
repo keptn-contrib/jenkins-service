@@ -17,9 +17,9 @@ before_install:
 - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
 - REPO_URL="$(git remote get-url --all origin)"
 - LAST_COMMIT="$(git log -1 --oneline)"
-- ./writeManifest.sh 
+- ./writeManifest.sh
+- cp MANIFEST ./docker-jenkins/MANIFEST
 - cat MANIFEST
-- ./docker-jenkins/writeManifest.sh
 - cat ./docker-jenkins/MANIFEST
 - npm install
 jobs:
