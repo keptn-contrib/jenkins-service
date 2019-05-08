@@ -32,12 +32,12 @@ jobs:
     - docker tag "${SERVICE_IMAGE}:${GIT_SHA}" "${SERVICE_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
     - docker push "${SERVICE_IMAGE}:${GIT_SHA}"
     - docker push "${SERVICE_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
-    - echo "Build Jenkins image"
-    - cd docker-jenkins
-    - docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
-    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
-    - docker push "${JENKINS_IMAGE}:${GIT_SHA}"
-    - docker push "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
+#    - echo "Build Jenkins image"
+#    - cd docker-jenkins
+#    - docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
+#    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
+#    - docker push "${JENKINS_IMAGE}:${GIT_SHA}"
+#    - docker push "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
   - stage: develop
     if: branch = develop AND NOT type = pull_request
     script:
@@ -67,9 +67,21 @@ jobs:
     - docker push "${SERVICE_IMAGE}:${GIT_SHA}"
     - docker push "${SERVICE_IMAGE}:${VERSION}.${DATE}"
     - docker push "${SERVICE_IMAGE}:${VERSION}.latest"
+    - echo "Build Jenkins image"
+    - cd docker-jenkins
+    - docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
+    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${VERSION}.${DATE}"
+    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${VERSION}.latest"
+    - docker push "${JENKINS_IMAGE}:${GIT_SHA}"
+    - docker push "${JENKINS_IMAGE}:${VERSION}.${DATE}"
+    - docker push "${JENKINS_IMAGE}:${VERSION}.latest"
   - stage: master
     if: branch = master AND NOT type = pull_request
     script:
     - echo $TRAVIS_BUILD_STAGE_NAME
     - docker build . -t "${SERVICE_IMAGE}:${VERSION}"
     - docker push "${SERVICE_IMAGE}:${VERSION}"
+    - echo "Build Jenkins image"
+    - cd docker-jenkins
+    - docker build . -t "${JENKINS_IMAGE}:${VERSION}"
+    - docker push "${JENKINS_IMAGE}:${VERSION}"
