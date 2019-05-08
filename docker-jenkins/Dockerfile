@@ -104,6 +104,7 @@ github-branch-source:2.4.1
 
 RUN cp -R /tmp/jobs/* "$JENKINS_HOME"/jobs/
 RUN ls "$JENKINS_HOME"/jobs/
+
 RUN chown -R ${user} "$JENKINS_HOME"
 RUN chmod -R 777 "$JENKINS_HOME"
 RUN chmod -R 777 /root
