@@ -35,11 +35,9 @@ jobs:
     - echo "Build Jenkins image"
     - cd docker-jenkins
     - docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
-    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${DATE}"
-    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:latest"
+    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
     - docker push "${JENKINS_IMAGE}:${GIT_SHA}"
-    - docker push "${JENKINS_IMAGE}:${DATE}"
-    - docker push "${JENKINS_IMAGE}:latest"
+    - docker push "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
   - stage: develop
     if: branch = develop AND NOT type = pull_request
     script:
