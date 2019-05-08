@@ -37,6 +37,9 @@ jobs:
     - docker tag "${SERVICE_IMAGE}:${GIT_SHA}" "${SERVICE_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
     - docker push "${SERVICE_IMAGE}:${GIT_SHA}"
     - docker push "${SERVICE_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
+    - if [ $CHANGED_FILES =~ ^docker-jenkins.*$ ]; then
+        echo "Build Jenkins image"
+      fi 
     # - echo "Build Jenkins image"
     # - cd docker-jenkins
     # - docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"

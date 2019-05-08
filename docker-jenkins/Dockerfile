@@ -27,7 +27,6 @@ RUN mkdir -p $JENKINS_HOME/jobs \
 RUN mkdir -p $JENKINS_HOME/workspaces \
   && chown ${uid}:${gid} $JENKINS_HOME/workspaces 
 
-
 # `/usr/share/jenkins/ref/` contains all reference configuration we want
 # to set on a fresh new installation. Use it to bundle additional plugins
 # or config file with your custom jenkins Docker image.
