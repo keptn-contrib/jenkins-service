@@ -17,7 +17,7 @@ before_install:
 - echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
 - REPO_URL="$(git remote get-url --all origin)"
 - LAST_COMMIT="$(git log -1 --oneline)"
-- CHANGED_FILES=($(git diff --name-only $TRAVIS_COMMIT_RANGE))
+- CHANGED_FILES=($(git diff --name-only $TRAVIS_COMMIT_RANGE) | paste -sd ",")
 - echo "$TRAVIS_COMMIT_RANGE"
 - echo "$CHANGED_FILES"
 - ./writeManifest.sh
