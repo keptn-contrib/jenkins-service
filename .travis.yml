@@ -18,6 +18,7 @@ before_install:
 - REPO_URL="$(git remote get-url --all origin)"
 - LAST_COMMIT="$(git log -1 --oneline)"
 - CHANGED_FILES=($(git diff --name-only $TRAVIS_COMMIT_RANGE))
+- echo "$TRAVIS_COMMIT_RANGE"
 - echo "$CHANGED_FILES"
 - ./writeManifest.sh
 - cp MANIFEST ./docker-jenkins/MANIFEST
@@ -38,7 +39,7 @@ jobs:
     - docker push "${SERVICE_IMAGE}:${GIT_SHA}"
     - docker push "${SERVICE_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
     - | 
-      if [ $CHANGED_FILES =~ ^docker-jenkins.*$ ]; then
+      if [ "$CHANGED_FILES" =~ ^docker-jenkins.*$ ]; then
         echo "Build Jenkins image"
       fi 
     # - echo "Build Jenkins image"
