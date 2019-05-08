@@ -24,4 +24,4 @@ RUN npm run build-ts
 USER myuser
 
 # Start the app
-CMD ["/usr/local/bin/npm", "start"]
+CMD ["sh", "-c", "cat MANIFEST && /usr/local/bin/npm start"]
