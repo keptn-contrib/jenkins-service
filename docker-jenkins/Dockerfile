@@ -110,4 +110,5 @@ RUN chmod -R 777 "$JENKINS_HOME"
 RUN chmod -R 777 /root
 
 COPY tini-shim.sh /bin/tini
+COPY ./MANIFEST "$JENKINS_HOME"/
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
