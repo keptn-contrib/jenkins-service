@@ -10,8 +10,8 @@ before_install:
 - SERVICE_IMAGE=keptn/jenkins-service
 - JENKINS_IMAGE=keptn/jenkins
 - REGISTRY_USER=jbraeuer
-- SERVICE_VERSION="$(cat version)"
-- JENKINS_VERSION="$(cat ./docker-jenkins/version)"
+- SERVICE_VERSION="$(cat version | tr -d '[:space:]')"
+- JENKINS_VERSION="$(cat ./docker-jenkins/version | tr -d '[:space:]')"
 - JENKINS_FOLDER="docker-jenkins"
 - DATE="$(date +'%Y%m%d.%H%M')"
 - GIT_SHA="$(git rev-parse --short HEAD)"
