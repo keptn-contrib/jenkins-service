@@ -79,7 +79,7 @@ pipeline {
           script {
             tagMatchRules[0].tags[0].value = "${env.PROJECT}"
             tagMatchRules[0].tags[1].value = "${env.SERVICE}"
-            tagMatchRules[0].tags[2].value = "${env.STAGE}"
+            tagMatchRules[0].tags[2].value = "${env.PROJECT}-${env.STAGE}"
             
             if (env.DT_TENANT_URL) {
               String dtTenant = "${env.DT_TENANT_URL}"
