@@ -81,7 +81,7 @@ pipeline {
             tagMatchRules[0].tags[1].value = "${env.SERVICE}"
             tagMatchRules[0].tags[2].value = "${env.PROJECT}-${env.STAGE}"
             
-            if (env.DT_TENANT_URL) {
+            if (env.DT_TENANT_URL && env.DT_API_TOKEN) {
               String dtTenant = "${env.DT_TENANT_URL}"
 
               if (dtTenant != null && dtTenant != "") {
@@ -107,7 +107,7 @@ pipeline {
                 println "Value of DT_TENANT_URL is empty, do not send event."
               }
             } else {
-              println "No DT_TENANT_URL available, do not send event."
+              println "DT_TENANT_URL or DT_API_TOKEN not set, do not send event."
             }
           }
         }
