@@ -83,8 +83,9 @@ pipeline {
             
             if (env.DT_TENANT_URL && env.DT_API_TOKEN) {
               String dtTenant = "${env.DT_TENANT_URL}"
+              String apiToken = "${env.DT_API_TOKEN}"
 
-              if (dtTenant != null && dtTenant != "") {
+              if (dtTenant != "" && apiToken != "") {
                 def status = pushDynatraceDeploymentEvent (
                   tagRule : tagMatchRules,
                   deploymentVersion : "${env.TAG}",
@@ -104,7 +105,7 @@ pipeline {
                   ]
                 )
               } else {
-                println "Value of DT_TENANT_URL is empty, do not send event."
+                println "Value of DT_TENANT_URL or DT_API_TOKEN is empty, do not send event."
               }
             } else {
               println "DT_TENANT_URL or DT_API_TOKEN not set, do not send event."
