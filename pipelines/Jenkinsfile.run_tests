@@ -117,25 +117,25 @@ pipeline {
               String dtTenant = "${env.DT_TENANT_URL}"
               String apiToken = "${env.DT_API_TOKEN}"
               
-              if (dtTenant != null && (dtTenant.endsWith("dynatrace.com") || dtTenant.endsWith("dynatrace.com/"))) {
-              def status = pushDynatraceInfoEvent (
-                  tagRule : tagMatchRules,
-                  title : "Start Running Tests: ${env.TESTSTRATEGY}",
-                  source : "Jenkins Run Tests Pipeline",
-                  description : "Start Running Tests: ${env.TESTSTRATEGY} against ${env.SERVICE}", 
-                  customProperties : [
-                    [key: 'Jenkins build number', value: "${env.BUILD_ID}"],
-                    [key: 'GitHub org', value: "${env.GITHUBORG}"],
-                    [key: 'Project', value: "${env.PROJECT}"],
-                    [key: 'Test strategy', value: "${env.TESTSTRATEGY}"],
-                    [key: 'Deployment strategy', value: "${env.DEPLOYMENTSTRATEGY}"],
-                    [key: 'Stage', value: "${env.STAGE}"],
-                    [key: 'Service', value: "${env.SERVICE}"],
-                    [key: 'Image', value: "${env.IMAGE}"],
-                    [key: 'Tag', value: "${env.TAG}"],
-                    [key: 'keptn context', value: "${env.KEPTNCONTEXT}"]
-                  ]
-                )
+              if (dtTenant != "" && apiToken != "") {
+                def status = pushDynatraceInfoEvent (
+                    tagRule : tagMatchRules,
+                    title : "Start Running Tests: ${env.TESTSTRATEGY}",
+                    source : "Jenkins Run Tests Pipeline",
+                    description : "Start Running Tests: ${env.TESTSTRATEGY} against ${env.SERVICE}", 
+                    customProperties : [
+                      [key: 'Jenkins build number', value: "${env.BUILD_ID}"],
+                      [key: 'GitHub org', value: "${env.GITHUBORG}"],
+                      [key: 'Project', value: "${env.PROJECT}"],
+                      [key: 'Test strategy', value: "${env.TESTSTRATEGY}"],
+                      [key: 'Deployment strategy', value: "${env.DEPLOYMENTSTRATEGY}"],
+                      [key: 'Stage', value: "${env.STAGE}"],
+                      [key: 'Service', value: "${env.SERVICE}"],
+                      [key: 'Image', value: "${env.IMAGE}"],
+                      [key: 'Tag', value: "${env.TAG}"],
+                      [key: 'keptn context', value: "${env.KEPTNCONTEXT}"]
+                    ]
+                  )
               } else {
                 println "Value of DT_TENANT_URL not valid, do not send event."
               }
@@ -238,7 +238,7 @@ pipeline {
               tagRule : tagMatchRules,
               title : "Stop Running Tests: ${env.TESTSTRATEGY} - SUCCESS",
               source : "Jenkins Run Tests Pipeline",
-              description : "Start Running Tests: ${env.TESTSTRATEGY} against ${env.SERVICE}", 
+              description : "Stop Running Tests: ${env.TESTSTRATEGY} against ${env.SERVICE}", 
               customProperties : [
                 [key: 'Jenkins build number', value: "${env.BUILD_ID}"],
                 [key: 'GitHub org', value: "${env.GITHUBORG}"],
