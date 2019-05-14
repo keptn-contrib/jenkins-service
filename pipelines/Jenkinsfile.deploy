@@ -55,7 +55,7 @@ pipeline {
         container('helm') {
           sh "helm init --client-only"
           sh "cd ${env.PROJECT} && helm dep update helm-chart/"
-          sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE}" --wait
+          sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
         }
       }
     }
@@ -69,7 +69,7 @@ pipeline {
         container('helm') {
           sh "helm init --client-only"
           sh "cd ${env.PROJECT} && helm dep update helm-chart/"
-          sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE}" --wait
+          sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
         }
       }
     }
