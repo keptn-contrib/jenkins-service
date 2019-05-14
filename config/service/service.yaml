@@ -15,7 +15,7 @@ spec:
             autoscaling.knative.dev/minScale: "1"
         spec:
           container:
-            image: keptn/jenkins-service:latest
+            image: keptn/jenkins-service:2188e72
             env: 
             - name: JENKINS_URL
               valueFrom:
