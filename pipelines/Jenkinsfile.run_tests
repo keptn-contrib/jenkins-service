@@ -51,7 +51,7 @@ pipeline {
             if ( env.DEPLOYMENTSTRATEGY ==~ 'blue_green_service' ) {
               def status_blue = waitForDeployment (
                 deploymentName: "${env.SERVICE}-blue",
-                environment: "${env.STAGE}"
+                environment: "${env.PROJECT}-${env.STAGE}"
               )
               if(status_blue !=0 ){
                 currentBuild.result = 'FAILED'
@@ -60,7 +60,7 @@ pipeline {
               
               def status_green = waitForDeployment (
                 deploymentName: "${env.SERVICE}-green",
-                environment: "${env.STAGE}"
+                environment: "${env.PROJECT}-${env.STAGE}"
               )
               if(status_green !=0 ){
                 currentBuild.result = 'FAILED'
@@ -69,7 +69,7 @@ pipeline {
             } else {
               def status = waitForDeployment (
                 deploymentName: "${env.SERVICE}",
-                environment: "${env.STAGE}"
+                environment: "${env.PROJECT}-${env.STAGE}"
               )
               if(status !=0 ){
                 currentBuild.result = 'FAILED'
@@ -157,7 +157,7 @@ pipeline {
             def status = executeJMeter (
               scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_load.jmx", 
               resultsDir: "FuncCheck_${env.SERVICE}",
-              serverUrl: "${env.SERVICE}.${env.STAGE}.svc.cluster.local", 
+              serverUrl: "${env.SERVICE}.${env.PROJECT}-${env.STAGE}.svc.cluster.local", 
               serverPort: 80,
               checkPath: '/health',
               vuCount: 1,
@@ -197,7 +197,7 @@ pipeline {
               def status = executeJMeter (
                 scriptName: "${env.SERVICE}/jmeter/${env.SERVICE}_load.jmx", 
                 resultsDir: "PerfCheck_${env.SERVICE}",
-                serverUrl: "${env.SERVICE}.${env.STAGE}.${GATEWAY}", 
+                serverUrl: "${env.SERVICE}.${env.PROJECT}-${env.STAGE}.${GATEWAY}", 
                 serverPort: 80,
                 checkPath: '/health',
                 vuCount: 10,
