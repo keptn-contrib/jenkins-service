@@ -41,6 +41,41 @@ pipeline {
       steps {
         script {
           container("curl") {
+            tagMatchRules[0].tags[0].value = "${env.PROJECT}"
+            tagMatchRules[0].tags[1].value = "${env.SERVICE}"
+            tagMatchRules[0].tags[2].value = "${env.PROJECT}-${env.STAGE}"
+        
+            if (env.DT_TENANT_URL && env.DT_API_TOKEN) {
+              String dtTenant = "${env.DT_TENANT_URL}"
+              String apiToken = "${env.DT_API_TOKEN}"
+
+              if (dtTenant != "" && apiToken != "") {
+                def status = pushDynatraceInfoEvent (
+                  tagRule : tagMatchRules,
+                  title : "Promote Artifact from ${env.STAGE} to next stage",
+                  source : "Jenkins Evaluation Done Pipeline",
+                  description : "keptn evaluation status: ${env.EVALUATIONPASSED}", 
+                  customProperties : [
+                    [key: 'Jenkins build number', value: "${env.BUILD_ID}"],
+                    [key: 'GitHub org', value: "${env.GITHUBORG}"],
+                    [key: 'Project', value: "${env.PROJECT}"],
+                    [key: 'Test strategy', value: ""],
+                    [key: 'Deployment strategy', value: "${env.DEPLOYMENTSTRATEGY}"],
+                    [key: 'Stage', value: "${env.STAGE}"],
+                    [key: 'Service', value: "${env.SERVICE}"],
+                    [key: 'Image', value: "${env.IMAGE}"],
+                    [key: 'Tag', value: "${env.TAG}"],
+                    [key: 'keptn context', value: "${env.KEPTNCONTEXT}"],
+                    [key: 'Evaluation passed', value: "${env.EVALUATIONPASSED}"]
+                  ]
+                )
+              } else {
+                println "Value of DT_TENANT_URL not valid, do not send event."
+              }
+            } else {
+              println "No DT_TENANT_URL available, do not send event."
+            }
+
             sendCloudEvent(
               receiver: 'event-broker.keptn.svc.cluster.local/keptn',
               type: 'sh.keptn.events.new-artefact',
@@ -86,7 +121,43 @@ pipeline {
                 sh "cd ${env.PROJECT} && git push"
               }
             }
+            
             container("curl") {
+              tagMatchRules[0].tags[0].value = "${env.PROJECT}"
+              tagMatchRules[0].tags[1].value = "${env.SERVICE}"
+              tagMatchRules[0].tags[2].value = "${env.PROJECT}-${env.STAGE}"
+
+              if (env.DT_TENANT_URL && env.DT_API_TOKEN) {
+                String dtTenant = "${env.DT_TENANT_URL}"
+                String apiToken = "${env.DT_API_TOKEN}"
+
+                if (dtTenant != "" && apiToken != "") {
+                  def status = pushDynatraceInfoEvent (
+                    tagRule : tagMatchRules,
+                    title : "Rollback Artifact (Switch Blue/Green) in ${env.STAGE}",
+                    source : "Jenkins Evaluation Done Pipeline",
+                    description : "keptn evaluation status: ${env.EVALUATIONPASSED}", 
+                    customProperties : [
+                      [key: 'Jenkins build number', value: "${env.BUILD_ID}"],
+                      [key: 'GitHub Org', value: "${env.GITHUBORG}"],
+                      [key: 'Project', value: "${env.PROJECT}"],
+                      [key: 'Test strategy', value: ""],
+                      [key: 'Deployment strategy', value: "${env.DEPLOYMENTSTRATEGY}"],
+                      [key: 'Stage', value: "${env.STAGE}"],
+                      [key: 'Service', value: "${env.SERVICE}"],
+                      [key: 'Image', value: "${env.IMAGE}"],
+                      [key: 'Tag', value: "${env.TAG}"],
+                      [key: 'keptn context', value: "${env.KEPTNCONTEXT}"],
+                      [key: 'Evaluation passed', value: "${env.EVALUATIONPASSED}"]
+                    ]
+                  )
+                } else {
+                  println "Value of DT_TENANT_URL not valid, do not send event."
+                }
+              } else {
+                println "No DT_TENANT_URL available, do not send event."
+              }
+
               sendCloudEvent(
                 receiver: 'event-broker.keptn.svc.cluster.local/keptn',
                 type: 'sh.keptn.events.configuration-changed',
@@ -101,8 +172,45 @@ pipeline {
                   [key: 'service', value: "${env.SERVICE}"],
                   [key: 'image', value: "${env.IMAGE}"],
                   [key: 'tag', value: "${env.TAG}"]
-                ]
+               ]
               )
+            }
+          } else {
+            container("curl") {
+              tagMatchRules[0].tags[0].value = "${env.PROJECT}"
+              tagMatchRules[0].tags[1].value = "${env.SERVICE}"
+              tagMatchRules[0].tags[2].value = "${env.PROJECT}-${env.STAGE}"
+          
+              if (env.DT_TENANT_URL && env.DT_API_TOKEN) {
+                String dtTenant = "${env.DT_TENANT_URL}"
+                String apiToken = "${env.DT_API_TOKEN}"
+
+                if (dtTenant != "" && apiToken != "") {
+                  def status = pushDynatraceInfoEvent (
+                  tagRule : tagMatchRules,
+                  title : "NOT PROMOTING Artifact from ${env.STAGE} due to failed evaluation",
+                  source : "Jenkins Evaluation Done Pipeline",
+                  description : "keptn evaluation status: ${env.EVALUATIONPASSED}", 
+                  customProperties : [
+                    [key: 'Jenkins build number', value: "${env.BUILD_ID}"],
+                    [key: 'GitHub Org', value: "${env.GITHUBORG}"],
+                    [key: 'Project', value: "${env.PROJECT}"],
+                    [key: 'Test strategy', value: ""],
+                    [key: 'Deployment strategy', value: "${env.DEPLOYMENTSTRATEGY}"],
+                    [key: 'Stage', value: "${env.STAGE}"],
+                    [key: 'Service', value: "${env.SERVICE}"],
+                    [key: 'Image', value: "${env.IMAGE}"],
+                    [key: 'Tag', value: "${env.TAG}"],
+                    [key: 'keptn context', value: "${env.KEPTNCONTEXT}"],
+                    [key: 'Evaluation passed', value: "${env.EVALUATIONPASSED}"]
+                  ]
+                  )
+                } else {
+                  println "Value of DT_TENANT_URL not valid, do not send event."
+                }
+              } else {
+                println "No DT_TENANT_URL available, do not send event."
+              }
             }
           }
         }
