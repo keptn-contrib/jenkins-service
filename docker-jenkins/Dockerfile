@@ -27,7 +27,6 @@ RUN mkdir -p $JENKINS_HOME/jobs \
 RUN mkdir -p $JENKINS_HOME/workspaces \
   && chown ${uid}:${gid} $JENKINS_HOME/workspaces 
 
-
 # `/usr/share/jenkins/ref/` contains all reference configuration we want
 # to set on a fresh new installation. Use it to bundle additional plugins
 # or config file with your custom jenkins Docker image.
@@ -105,9 +104,11 @@ github-branch-source:2.4.1
 
 RUN cp -R /tmp/jobs/* "$JENKINS_HOME"/jobs/
 RUN ls "$JENKINS_HOME"/jobs/
+
 RUN chown -R ${user} "$JENKINS_HOME"
 RUN chmod -R 777 "$JENKINS_HOME"
 RUN chmod -R 777 /root
 
 COPY tini-shim.sh /bin/tini
+COPY ./MANIFEST "$JENKINS_HOME"/
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]

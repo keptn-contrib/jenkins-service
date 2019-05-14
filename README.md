@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/keptn/jenkins-service.svg?branch=master)](https://travis-ci.org/keptn/jenkins-service)
+
 # Keptn Jenkins Service
 
 This service is designed to use Jenkins for executing various continuous delivery tasks. Thus, this service can make use of Jenkins jobs to:

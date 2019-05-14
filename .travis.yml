@@ -1,0 +1,99 @@
+sudo: true
+dist: xenial
+language: node_js
+node_js:
+- '10'
+services:
+- docker
+before_install:
+- export TZ=Europe/Vienna
+- SERVICE_IMAGE=keptn/jenkins-service
+- JENKINS_IMAGE=keptn/jenkins
+- REGISTRY_USER=jbraeuer
+- SERVICE_VERSION="$(cat version | tr -d '[:space:]')"
+- JENKINS_VERSION="$(cat ./docker-jenkins/version | tr -d '[:space:]')"
+- JENKINS_FOLDER="docker-jenkins"
+- DATE="$(date +'%Y%m%d.%H%M')"
+- GIT_SHA="$(git rev-parse --short HEAD)"
+- echo "$REGISTRY_PASSWORD" | docker login --username $REGISTRY_USER --password-stdin
+- REPO_URL="$(git remote get-url --all origin)"
+- LAST_COMMIT="$(git log -1 --oneline)"
+- CHANGED_FILES=($(git diff --name-only $TRAVIS_COMMIT_RANGE | paste -sd "," ) )
+- echo "Changed files>$CHANGED_FILES"
+- ./writeManifest.sh
+- cp MANIFEST ./docker-jenkins/MANIFEST
+- cat MANIFEST
+- cat ./docker-jenkins/MANIFEST
+- npm install
+jobs:
+  include:
+  - stage: feature/bug
+    if: branch =~ ^feature.*$ OR branch =~ ^bug.*$ OR branch =~ ^hotfix.*$
+    script:
+    - echo $TRAVIS_BUILD_STAGE_NAME
+    - echo "Build jenkins-service"
+    - TYPE="$(echo $TRAVIS_BRANCH | cut -d'/' -f1)"
+    - NUMBER="$(echo $TRAVIS_BRANCH | cut -d'/' -f2)"
+    - docker build . -t "${SERVICE_IMAGE}:${GIT_SHA}"
+    - docker tag "${SERVICE_IMAGE}:${GIT_SHA}" "${SERVICE_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
+    - docker push "${SERVICE_IMAGE}:${GIT_SHA}"
+    - docker push "${SERVICE_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
+    - | 
+      if [[ $CHANGED_FILES == *"${JENKINS_FOLDER}"*  ]]; then
+        echo "Build Jenkins image"
+        cd docker-jenkins
+        docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
+        docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
+        docker push "${JENKINS_IMAGE}:${GIT_SHA}"
+        docker push "${JENKINS_IMAGE}:${TYPE}.${NUMBER}.${DATE}"
+      fi
+  - stage: develop
+    if: branch = develop AND NOT type = pull_request
+    script:
+    - echo $TRAVIS_BUILD_STAGE_NAME
+    - echo "Build jenkins-service"
+    - docker build . -t "${SERVICE_IMAGE}:${GIT_SHA}"
+    - docker tag "${SERVICE_IMAGE}:${GIT_SHA}" "${SERVICE_IMAGE}:${DATE}"
+    - docker tag "${SERVICE_IMAGE}:${GIT_SHA}" "${SERVICE_IMAGE}:latest"
+    - docker push "${SERVICE_IMAGE}:${GIT_SHA}"
+    - docker push "${SERVICE_IMAGE}:${DATE}"
+    - docker push "${SERVICE_IMAGE}:latest"
+    - | 
+      if [[ $CHANGED_FILES == *"${JENKINS_FOLDER}"*  ]]; then
+        echo "Build Jenkins image"
+        cd docker-jenkins
+        docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
+        docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${DATE}"
+        docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:latest"
+        docker push "${JENKINS_IMAGE}:${GIT_SHA}"
+        docker push "${JENKINS_IMAGE}:${DATE}"
+        docker push "${JENKINS_IMAGE}:latest"
+      fi
+  - stage: release-branch
+    if: branch =~ ^release.*$ AND NOT type = pull_request
+    script:
+    - echo $TRAVIS_BUILD_STAGE_NAME
+    - docker build . -t "${SERVICE_IMAGE}:${GIT_SHA}"
+    - docker tag "${SERVICE_IMAGE}:${GIT_SHA}" "${SERVICE_IMAGE}:${SERVICE_VERSION}.${DATE}"
+    - docker tag "${SERVICE_IMAGE}:${GIT_SHA}" "${SERVICE_IMAGE}:${SERVICE_VERSION}.latest"
+    - docker push "${SERVICE_IMAGE}:${GIT_SHA}"
+    - docker push "${SERVICE_IMAGE}:${SERVICE_VERSION}.${DATE}"
+    - docker push "${SERVICE_IMAGE}:${SERVICE_VERSION}.latest"
+    - echo "Build Jenkins image"
+    - cd docker-jenkins
+    - docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
+    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${VERSION}.${DATE}"
+    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${VERSION}.latest"
+    - docker push "${JENKINS_IMAGE}:${GIT_SHA}"
+    - docker push "${JENKINS_IMAGE}:${JENKINS_VERSION}.${DATE}"
+    - docker push "${JENKINS_IMAGE}:${JENKINS_VERSION}.latest"
+  - stage: master
+    if: branch = master AND NOT type = pull_request
+    script:
+    - echo $TRAVIS_BUILD_STAGE_NAME
+    - docker build . -t "${SERVICE_IMAGE}:${SERVICE_VERSION}"
+    - docker push "${SERVICE_IMAGE}:${SERVICE_VERSION}"
+    - echo "Build Jenkins image"
+    - cd docker-jenkins
+    - docker build . -t "${JENKINS_IMAGE}:${JENKINS_VERSION}"
+    - docker push "${JENKINS_IMAGE}:${JENKINS_VERSION}"
