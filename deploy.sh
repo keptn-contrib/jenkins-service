@@ -61,7 +61,7 @@ while [[ $RETRY -lt $RETRY_MAX ]]; do
 
   if [[ $? == '0' ]]
   then
-    print_debug "Git credentials in Jenkins created, continue installation."
+    print_debug "Git credentials in Jenkins created."
     break
   fi
   RETRY=$[$RETRY+1]
