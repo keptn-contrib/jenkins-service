@@ -109,11 +109,14 @@ pipeline {
       steps {
         container("curl") {
           script {
-              tagMatchRules[0].tags[0].value = "${env.PROJECT}"
-              tagMatchRules[0].tags[1].value = "${env.SERVICE}"
-              tagMatchRules[0].tags[2].value = "${env.PROJECT}-${env.STAGE}"
-          
-              String dtTenant = "${DT_TENANT_URL}"
+            tagMatchRules[0].tags[0].value = "${env.PROJECT}"
+            tagMatchRules[0].tags[1].value = "${env.SERVICE}"
+            tagMatchRules[0].tags[2].value = "${env.PROJECT}-${env.STAGE}"
+        
+            if (env.DT_TENANT_URL && env.DT_API_TOKEN) {
+              String dtTenant = "${env.DT_TENANT_URL}"
+              String apiToken = "${env.DT_API_TOKEN}"
+              
               if (dtTenant != null && (dtTenant.endsWith("dynatrace.com") || dtTenant.endsWith("dynatrace.com/"))) {
               def status = pushDynatraceInfoEvent (
                   tagRule : tagMatchRules,
@@ -134,9 +137,11 @@ pipeline {
                   ]
                 )
               } else {
-                println "No DT creds available"
+                println "Value of DT_TENANT_URL not valid, do not send event."
               }
-            
+            } else {
+              println "No DT_TENANT_URL available, do not send event."
+            }
           }
         }
       }
@@ -304,7 +309,7 @@ pipeline {
                 String dtTenant = "${env.DT_TENANT_URL}"
                 String apiToken = "${env.DT_API_TOKEN}"
 
-                if (dtTenant != null && (dtTenant.endsWith("dynatrace.com") || dtTenant.endsWith("dynatrace.com/"))) {
+                if (dtTenant != "" && apiToken != "") {
                   def status = pushDynatraceInfoEvent (
                   tagRule : tagMatchRules,
                   title : "Stop Running Tests: ${env.TESTSTRATEGY} - FAILED",
