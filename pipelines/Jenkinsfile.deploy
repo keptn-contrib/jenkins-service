@@ -66,8 +66,15 @@ pipeline {
         }
       }      
       steps {
+        container('yq') {
+            sh "COLOR1=$(cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[0].destination.subset)"
+            sh "WEIGHT1=$(cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[0].weight)"
+            sh "COLOR2=$(cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[1].destination.subset)"
+            sh "WEIGHT2=$(cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[1].weight)"
+        }
+
         container('kubectl') {
-          sh "echo ${env.PROJECT}"
+            sh "if [ $WEIGHT1 == "100" ]; then echo "Delete doployment of" $COLOR1; echo "Service=" ${env.SERVICE}; elif [$WEIGHT2 == "100" ]; then echo "Delete doployment of" $COLOR2; echo "Service=" ${env.SERVICE}; else  echo "This case must not happen!"; fi"
         }
         container('helm') {        
           sh "helm init --client-only"          
