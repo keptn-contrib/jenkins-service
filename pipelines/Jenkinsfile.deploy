@@ -67,10 +67,10 @@ pipeline {
       }      
       steps {
         container('yq') {
-            sh "cat ./helm-chart/carts-istio-virtual-service.yaml | yq r - spec.http[0].route[0].destination.subset"
-            sh "cat ./helm-chart/carts-istio-virtual-service.yaml | yq r - spec.http[0].route[0].weight"
-            sh "cat ./helm-chart/carts-istio-virtual-service.yaml | yq r - spec.http[0].route[1].destination.subset"
-            sh "cat ./helm-chart/carts-istio-virtual-service.yaml | yq r - spec.http[0].route[1].weight"
+            sh "cat ./helm-chart/templates/carts-istio-virtual-service.yaml | yq r - spec.http[0].route[0].destination.subset"
+            sh "cat ./helm-chart/templates/carts-istio-virtual-service.yaml | yq r - spec.http[0].route[0].weight"
+            sh "cat ./helm-chart/templates/carts-istio-virtual-service.yaml | yq r - spec.http[0].route[1].destination.subset"
+            sh "cat ./helm-chart/templates/carts-istio-virtual-service.yaml | yq r - spec.http[0].route[1].weight"
         }
 
         container('kubectl') {
