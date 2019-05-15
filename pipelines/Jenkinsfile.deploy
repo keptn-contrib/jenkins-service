@@ -68,13 +68,16 @@ pipeline {
       steps {
         container('yq') {
             script {
-                def c1 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[0].destination.subset', returnStdout: true)
-                def w1 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[0].weight', returnStdout: true)
-                def c2 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[1].destination.subset', returnStdout: true)
-                def w2 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[1].weight', returnStdout: true)
+                sh "pwd"
+                sh "echo ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml"
+                sh "cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml > vs"
+
+                def c1 = sh(script: 'yq r vs spec.http[0].route[0].destination.subset', returnStdout: true)
+                def w1 = sh(script: 'yq r vs spec.http[0].route[0].weight', returnStdout: true)
+                def c2 = sh(script: 'yq r vs spec.http[0].route[1].destination.subset', returnStdout: true)
+                def w2 = sh(script: 'yq r vs spec.http[0].route[1].weight', returnStdout: true)
             }
         }
-
         container('kubectl') {
             script {
                 if (w1 == "100") {
