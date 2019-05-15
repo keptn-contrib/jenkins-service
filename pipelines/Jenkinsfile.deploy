@@ -79,11 +79,11 @@ pipeline {
         container('kubectl') {
             script {
                 if (readFile('w1').trim() == "100") {
-                    println "Delete doployment of " + "${env.SERVICE}" + "-" + readFile('c1').trim() " in namespace " + "${env.PROJECT}-${env.STAGE}"
+                    println "Delete doployment of " + "${env.SERVICE}" + "-" + readFile('c1').trim() + " in namespace " + "${env.PROJECT}-${env.STAGE}"
                     String cmd = "kubectl delete deployment " + "${env.SERVICE}" + "-" + readFile('c1').trim() + " --namespace " + "${env.PROJECT}-${env.STAGE}"
                     sh(script: cmd)
                 } else if (readFile('w2').trim() == "100") {
-                    println "Delete doployment of " + "${env.SERVICE}" + "-" + readFile('c2').trim() " in namespace " + "${env.PROJECT}-${env.STAGE}"
+                    println "Delete doployment of " + "${env.SERVICE}" + "-" + readFile('c2').trim() + " in namespace " + "${env.PROJECT}-${env.STAGE}"
                     String cmd = "kubectl delete deployment " + "${env.SERVICE}" + "-" + readFile('c1').trim() + " --namespace " + "${env.PROJECT}-${env.STAGE}"
                     sh(script: cmd)
                 } else {
