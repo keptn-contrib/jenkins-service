@@ -54,9 +54,10 @@ pipeline {
       steps {
         container('helm') {
           sh "helm init --client-only"
-          final foundFiles = sh(script: "find ${env.PROJECT}/helm-chart/templates -name '*istio-virtual-service*' -print", returnStdout: true).split()
-          for (String file : foundFiles) {
-            String mvCmd = "mv " + foundFiles + " " + "${env.PROJECT}" + "/helm-chart/"
+          
+          sh "find ${env.PROJECT}/helm-chart -name '*istio-virtual-service*' -print > istioFiles"
+          for (String file : readFile('istioFiles').split()) {
+            String mvCmd = "mv " + file + " " + "${env.PROJECT}" + "/helm-chart/templates"
             println mvCmd
           }
             
@@ -77,22 +78,20 @@ pipeline {
             sh "helm init --client-only"
             sh "cd ${env.PROJECT} && helm dep update helm-chart/"
 
-            final foundFiles = sh(script: "find ${env.PROJECT}/helm-chart/templates -name '*istio-virtual-service*' -print", returnStdout: true).split()
-            for (String file : foundFiles) {
+            sh "find ${env.PROJECT}/helm-chart/templates -name '*istio-virtual-service*' -print > istioFiles"
+            for (String file : readFile('istioFiles').split()) {
               String mvCmd = "mv " + foundFiles + " " + "${env.PROJECT}" + "/helm-chart/"
               println mvCmd
               sh(script: mvCmd)
             }
-
             sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
 
-            final foundFilesTmp = sh(script: "find ${env.PROJECT}/helm-chart -name '*istio-virtual-service*' -print", returnStdout: true).split()
-            for (String file : foundFilesTmp) {
+            sh "find ${env.PROJECT}/helm-chart -name '*istio-virtual-service*' -print > istioFiles"
+            for (String file : readFile('istioFiles').split()) {
               String mvCmd = "mv " + file + " " + "${env.PROJECT}" + "/helm-chart/templates"
               println mvCmd
               sh(script: mvCmd)
             }
-
             sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
           }
         }
