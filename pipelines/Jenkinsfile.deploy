@@ -74,7 +74,7 @@ pipeline {
         }
 
         container('kubectl') {
-            sh "echo "Service=" ${env.SERVICE}"
+            sh "echo ${env.SERVICE}"
         }
         container('helm') {        
           sh "helm init --client-only"          
