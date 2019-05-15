@@ -70,10 +70,10 @@ pipeline {
           sh "helm init --client-only"
           sh "cd ${env.PROJECT} && helm dep update helm-chart/"
           
-          sh "cd ${env.PROJECT}/helm-chart/templates && find . -name '*istio-virtual-service*' -print | xargs -J% mv % ../"
+          sh "cd ${env.PROJECT}/helm-chart/templates && for i in $(find . -name '*istio-virtual-service*' -print ); do mv "$i" ../; done"
           sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
           
-          sh "cd ${env.PROJECT}/helm-chart && find . -name '*istio-virtual-service*' -print | xargs -J% mv % templates/"
+          sh "cd ${env.PROJECT}/helm-chart && for i in $(find . -name '*istio-virtual-service*' -print ); do mv "$i" templates/; done"
           sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
         }
       }
