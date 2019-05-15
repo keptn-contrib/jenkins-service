@@ -70,10 +70,22 @@ pipeline {
           sh "helm init --client-only"
           sh "cd ${env.PROJECT} && helm dep update helm-chart/"
           
-          sh '''cd ${env.PROJECT}/helm-chart/templates && for i in $(find . -name '*istio-virtual-service*' -print ); do mv "$i" ../; done'''
+          final foundFiles = sh(script: 'find ${env.PROJECT}/helm-chart/templates -name '*istio-virtual-service*' -print', returnStdout: true).split()
+          for (String file : foundFiles) {
+            String mvCmd = "mv " + foundFiles + " " + "${env.PROJECT}" + "/helm-chart/"
+            println mvCmd
+            sh(script: mvCmd)
+          }
+          
           sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
           
-          sh '''cd ${env.PROJECT}/helm-chart && for i in $(find . -name '*istio-virtual-service*' -print ); do mv "$i" templates/; done'''
+          final foundFilesTmp = sh(script: 'find ${env.PROJECT}/helm-chart -name '*istio-virtual-service*' -print', returnStdout: true).split()
+          for (String file : foundFilesTmp) {
+            String mvCmd = "mv " + file + " " + "${env.PROJECT}" + "/helm-chart/templates"
+            println mvCmd
+            sh(script: mvCmd)
+          }
+    
           sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
         }
       }
