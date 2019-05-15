@@ -64,10 +64,13 @@ pipeline {
         expression {
           return env.DEPLOYMENTSTRATEGY ==~ 'blue_green_service' 
         }
-      }
+      }      
       steps {
-        container('helm') {
-          sh "helm init --client-only"
+        container('kubectl') {
+          sh "echo ${env.PROJECT}"
+        }
+        container('helm') {        
+          sh "helm init --client-only"          
           sh "cd ${env.PROJECT} && helm dep update helm-chart/"
           sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
         }
