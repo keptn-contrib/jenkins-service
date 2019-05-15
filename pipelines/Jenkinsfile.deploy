@@ -67,19 +67,23 @@ pipeline {
       }      
       steps {
         container('yq') {
-            def c1 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[0].destination.subset', returnStdout: true)
-            def w1 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[0].weight', returnStdout: true)
-            def c2 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[1].destination.subset', returnStdout: true)
-            def w2 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[1].weight', returnStdout: true)
+            script {
+                def c1 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[0].destination.subset', returnStdout: true)
+                def w1 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[0].weight', returnStdout: true)
+                def c2 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[1].destination.subset', returnStdout: true)
+                def w2 = sh(script: 'cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml | yq r - spec.http[0].route[1].weight', returnStdout: true)
+            }
         }
 
         container('kubectl') {
-            if (w1 == "100") {
-                print "Delete doployment of " + "${env.SERVICE}" + c1
-            } else if (w2 == "100") {
-                print "Delete doployment of " + "${env.SERVICE}" + c2
-            } else {
-                print "This case must not happen!"
+            script {
+                if (w1 == "100") {
+                    println "Delete doployment of " + "${env.SERVICE}" + c1
+                } else if (w2 == "100") {
+                    println "Delete doployment of " + "${env.SERVICE}" + c2
+                } else {
+                    println "This case must not happen!"
+                }
             }
         }
         container('helm') {        
