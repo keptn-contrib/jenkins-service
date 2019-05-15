@@ -55,13 +55,6 @@ pipeline {
         container('helm') {
           script {
             sh "helm init --client-only"
-
-            sh "find ${env.PROJECT}/helm-chart -name '*istio-virtual-service*' -print > istioFiles"
-            for (String file : readFile('istioFiles').split()) {
-              String mvCmd = "mv " + file + " " + "${env.PROJECT}" + "/helm-chart/templates"
-              println mvCmd
-            }
-
             sh "cd ${env.PROJECT} && helm dep update helm-chart/"
             sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
           }
@@ -82,7 +75,7 @@ pipeline {
 
             sh "find ${env.PROJECT}/helm-chart/templates -name '*istio-virtual-service*' -print > istioFiles"
             for (String file : readFile('istioFiles').split()) {
-              String mvCmd = "mv " + foundFiles + " " + "${env.PROJECT}" + "/helm-chart/"
+              String mvCmd = "mv " + files + " " + "${env.PROJECT}" + "/helm-chart/"
               println mvCmd
               sh(script: mvCmd)
             }
@@ -90,7 +83,7 @@ pipeline {
 
             sh "find ${env.PROJECT}/helm-chart -name '*istio-virtual-service*' -print > istioFiles"
             for (String file : readFile('istioFiles').split()) {
-              String mvCmd = "mv " + file + " " + "${env.PROJECT}" + "/helm-chart/templates"
+              String mvCmd = "mv " + file + " " + "${env.PROJECT}" + "/helm-chart/templates/"
               println mvCmd
               sh(script: mvCmd)
             }
