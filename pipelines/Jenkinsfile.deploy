@@ -79,9 +79,9 @@ pipeline {
         container('kubectl') {
             script {
                 if (readFile('w1').trim() == "100") {
-                    println "Delete doployment of " + "${env.SERVICE}" + c1
+                    println "Delete doployment of " + "${env.SERVICE}" + readFile('c1').trim()
                 } else if (readFile('w2').trim() == "100") {
-                    println "Delete doployment of " + "${env.SERVICE}" + c2
+                    println "Delete doployment of " + "${env.SERVICE}" + readFile('c2').trim()
                 } else {
                     println "This case must not happen!"
                 }
