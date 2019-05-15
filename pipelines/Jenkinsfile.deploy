@@ -80,7 +80,16 @@ pipeline {
               sh(script: mvCmd)
             }
             sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
-
+          }
+        }
+        container('kubectl') {    
+          script {
+            sh "kubectl rollout status deployment/" + "${env.SERVICE}" + "-blue" + " --namespace " + "${env.PROJECT}-${env.STAGE}"
+            sh "kubectl rollout status deployment/" + "${env.SERVICE}" + "-green" + " --namespace " + "${env.PROJECT}-${env.STAGE}"
+          }
+        }
+        container('helm') {    
+          script {
             sh "find ${env.PROJECT}/helm-chart -name '*istio-virtual-service*' -print > istioVSFiles"
             for (String file : readFile('istioVSFiles').split()) {
               String mvCmd = "mv " + file + " " + "${env.PROJECT}" + "/helm-chart/templates/"
