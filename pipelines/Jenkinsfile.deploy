@@ -66,34 +66,14 @@ pipeline {
         }
       }      
       steps {
-        container('yq') {
-            script {
-                sh "cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml > vs"
-                sh "yq r vs spec.http[0].route[0].destination.subset > c1"
-                sh "yq r vs spec.http[0].route[0].weight > w1"
-                sh "yq r vs spec.http[0].route[1].destination.subset > c2"
-                sh "yq r vs spec.http[0].route[1].weight > w2"
-            }
-        }
-
-        container('kubectl') {
-            script {
-                if (readFile('w1').trim() == "100") {
-                    println "Delete doployment of " + "${env.SERVICE}" + "-" + readFile('c1').trim() + " in namespace " + "${env.PROJECT}-${env.STAGE}"
-                    String cmd = "kubectl delete deployment " + "${env.SERVICE}" + "-" + readFile('c1').trim() + " --namespace " + "${env.PROJECT}-${env.STAGE}"
-                    sh(script: cmd)
-                } else if (readFile('w2').trim() == "100") {
-                    println "Delete doployment of " + "${env.SERVICE}" + "-" + readFile('c2').trim() + " in namespace " + "${env.PROJECT}-${env.STAGE}"
-                    String cmd = "kubectl delete deployment " + "${env.SERVICE}" + "-" + readFile('c1').trim() + " --namespace " + "${env.PROJECT}-${env.STAGE}"
-                    sh(script: cmd)
-                } else {
-                    println "This case must not happen!"
-                }
-            }
-        }
         container('helm') {        
-          sh "helm init --client-only"          
+          sh "helm init --client-only"
           sh "cd ${env.PROJECT} && helm dep update helm-chart/"
+          
+          sh "cd ${env.PROJECT}/helm-chart/templates && find . -name '*istio-virtual-service*' -exec mv {} ../ \;"
+          sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
+          
+          sh "cd ${env.PROJECT}/helm-chart && find . -name '*istio-virtual-service*' -exec mv {} ./templates \;"
           sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
         }
       }
