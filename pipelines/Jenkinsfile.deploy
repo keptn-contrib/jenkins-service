@@ -69,21 +69,18 @@ pipeline {
         container('yq') {
             script {
                 sh "cat ${env.PROJECT}/helm-chart/templates/${env.SERVICE}-istio-virtual-service.yaml > vs"
-                def c1 = sh(script: 'yq r vs spec.http[0].route[0].destination.subset', returnStdout: true)
-                println c1
-                def w1 = sh(script: 'yq r vs spec.http[0].route[0].weight', returnStdout: true)
-                println w1
-                def c2 = sh(script: 'yq r vs spec.http[0].route[1].destination.subset', returnStdout: true)
-                println c2
-                def w2 = sh(script: 'yq r vs spec.http[0].route[1].weight', returnStdout: true)
-                println w2
+                sh "yq r vs spec.http[0].route[0].destination.subset > c1"
+                sh "yq r vs spec.http[0].route[0].weight > w1"
+                sh "yq r vs spec.http[0].route[1].destination.subset > c2"
+                sh "yq r vs spec.http[0].route[1].weight > w2"
             }
         }
+
         container('kubectl') {
             script {
-                if (w1 == "100") {
+                if (readFile('w1').trim() == "100") {
                     println "Delete doployment of " + "${env.SERVICE}" + c1
-                } else if (w2 == "100") {
+                } else if (readFile('w2').trim() == "100") {
                     println "Delete doployment of " + "${env.SERVICE}" + c2
                 } else {
                     println "This case must not happen!"
