@@ -67,10 +67,10 @@ pipeline {
       }      
       steps {
         container('yq') {
-            sh "echo "COLOR1" $(cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[0].destination.subset)"
-            sh "echo "WEIGHT1" $(cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[0].weight)"
-            sh "echo "COLOR2" $(cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[1].destination.subset)"
-            sh "echo "WEIGHT2" $(cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[1].weight)"
+            sh "cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[0].destination.subset"
+            sh "cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[0].weight"
+            sh "cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[1].destination.subset"
+            sh "cat carts-istio-virtual-service.yaml | yq r - spec.http[0].route[1].weight"
         }
 
         container('kubectl') {
