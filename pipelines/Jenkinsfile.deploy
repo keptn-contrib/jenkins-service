@@ -88,7 +88,7 @@ pipeline {
         }
         container('git') {
           withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-            sh "cd ${env.PROJECT} && git pull"
+            sh "cd ${env.PROJECT} && git reset --hard 'HEAD@{1}'"
           }
         }
         container('helm') {    
