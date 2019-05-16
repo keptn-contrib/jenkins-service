@@ -79,7 +79,7 @@ pipeline {
               println mvCmd
               sh(script: mvCmd)
             }
-            sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
+            sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait --reuse-values"
           }
         }
         container('kubectl') {    
@@ -96,7 +96,7 @@ pipeline {
               println mvCmd
               sh(script: mvCmd)
             }
-            sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
+            sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait --reuse-values"
           }
         }
       }
