@@ -6,5 +6,6 @@
 
 ## Fixed Issues
 - Bugfix in roll-back step of *evalution_done* and *run_tests* pipelines [#292](https://github.com/keptn/keptn/issues/292)
+- Fix no healthy upstream-problem during b/g deployment [#332](https://github.com/keptn/keptn/issues/332)
 
 ## Known Limitations
