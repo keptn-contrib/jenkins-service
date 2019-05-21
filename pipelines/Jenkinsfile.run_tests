@@ -146,13 +146,12 @@ pipeline {
       }
       steps {
         container('kubectl') {
-          sh "kubectl get svc istio-ingressgateway -n istio-system -o yaml >> gateway_all"
+          sh "kubectl get cm keptn-domain -n keptn -oyaml >> gateway_all"
         }
         container('yq') {
-          sh "cat gateway_all | yq - r status.loadBalancer.ingress[0].ip >> gateway"
+          sh "cat gateway_all | yq r - data.app_domain >> gateway"
           script {
             GATEWAY = readFile('gateway').trim()
-            GATEWAY = GATEWAY + '.xip.io'
           }
         }
         script {
