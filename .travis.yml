@@ -82,8 +82,8 @@ jobs:
     - echo "Build Jenkins image"
     - cd docker-jenkins
     - docker build . -t "${JENKINS_IMAGE}:${GIT_SHA}"
-    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${VERSION}.${DATE}"
-    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${VERSION}.latest"
+    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${JENKINS_VERSION}.${DATE}"
+    - docker tag "${JENKINS_IMAGE}:${GIT_SHA}" "${JENKINS_IMAGE}:${JENKINS_VERSION}.latest"
     - docker push "${JENKINS_IMAGE}:${GIT_SHA}"
     - docker push "${JENKINS_IMAGE}:${JENKINS_VERSION}.${DATE}"
     - docker push "${JENKINS_IMAGE}:${JENKINS_VERSION}.latest"
