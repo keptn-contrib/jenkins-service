@@ -1,6 +1,9 @@
 # Release Notes 0.2.1
 
 ## New Features
+- new Jenkins image: keptn/jenkins:0.6.0
+
+## New Features
 - The name of the namespace has the project name as prefix, e.g., sockshop-dev, sockshop-production [#229](https://github.com/keptn/keptn/issues/229)
 - The *deploy* pipeline does not send the Dynatrace deployment event since this is handled by the dynatrace-service now [#268](https://github.com/keptn/keptn/issues/268)
 
