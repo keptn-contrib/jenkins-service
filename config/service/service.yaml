@@ -5,6 +5,8 @@ kind: Service
 metadata:
   name: jenkins-service
   namespace: keptn
+  labels:
+    serving.knative.dev/visibility: cluster-local
 spec:
   runLatest:
     configuration:
@@ -15,7 +17,7 @@ spec:
             autoscaling.knative.dev/minScale: "1"
         spec:
           container:
-            image: keptn/jenkins-service:0.1.0
+            image: keptn/jenkins-service:0.3.0
             env: 
             - name: JENKINS_URL
               valueFrom:

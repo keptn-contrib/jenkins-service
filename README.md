@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/keptn/jenkins-service.svg?branch=master)](https://travis-ci.org/keptn/jenkins-service)
+
 # Keptn Jenkins Service
 
 This service is designed to use Jenkins for executing various continuous delivery tasks. Thus, this service can make use of Jenkins jobs to:
@@ -18,6 +20,7 @@ During the setup of the Jenkins, a secret is created that contains key-value pai
 
 ## Docker Jenkins
 The `docker-jenkins` folder contains a `Dockerfile` and all artifacts for building the Jenkins container image. Characteristics of this Jenkins image are:
+* **Performance Signature Plugin 3.1.1**
 * **Jenkins jobs**:
   * deploy
   * run_test
@@ -26,19 +29,17 @@ The `docker-jenkins` folder contains a `Dockerfile` and all artifacts for buildi
 ## Install service <a id="install"></a>
 
 1. To install the service, specify values for the following parameters:
-    * REGISTRY_URI - URI of the container registry
+    * REGISTRY_URL - URL of the container registry
     * JENKINS_USER - Jenkins user
     * JENKINS_PASSWORD - Password of Jenkins user
     * GITHUB_USER_EMAIL - Email of GitHub user
     * GITHUB_ORGANIZATION - GitHub organization used by keptn
     * GITHUB_PERSONAL_ACCESS_TOKEN - Personal access token from GitHub user
-    * DT_API_TOKEN (optional) - Dynatrace API token
-    * DT_TENANT_URL (optional) - Dynatrace tenant URL
 
 1. Run the `deploy.sh` script as shown below: 
 
     ```console
-    $ ./deploy.sh REGISTRY_URI JENKINS_USER JENKINS_PASSWORD GITHUB_USER_EMAIL GITHUB_ORGANIZATION GITHUB_PERSONAL_ACCESS_TOKEN DT_API_TOKEN DT_TENANT_URL
+    $ ./deploy.sh $REGISTRY_URL $JENKINS_USER $JENKINS_PASSWORD $GITHUB_USER_NAME $GITHUB_USER_EMAIL $GITHUB_ORGANIZATION $GITHUB_PERSONAL_ACCESS_TOKEN 
     ```
 
 1. To verify the installation, execute the following `kubectl` commands: 

@@ -6,6 +6,8 @@ touch "${COPY_REFERENCE_FILE_LOG}" || { echo "Can not write to ${COPY_REFERENCE_
 echo "--- Copying files at $(date)" >> "$COPY_REFERENCE_FILE_LOG"
 find /usr/share/jenkins/ref/ \( -type f -o -type l \) -exec bash -c '. /usr/local/bin/jenkins-support; for arg; do copy_reference_file "$arg"; done' _ {} +
 
+cat $JENKINS_HOME/MANIFEST
+
 sed -i 's/DOCKER_REGISTRY_URL_PLACEHOLDER/'"$DOCKER_REGISTRY_IP"'/' $JENKINS_HOME/config.xml
 sed -i 's/GITHUB_USER_EMAIL_PLACEHOLDER/'"$GITHUB_USER_EMAIL"'/' $JENKINS_HOME/config.xml
 sed -i 's/GITHUB_ORGANIZATION_PLACEHOLDER/'"$GITHUB_ORGANIZATION"'/' $JENKINS_HOME/config.xml
