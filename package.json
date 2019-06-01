@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@types/express": "^4.16.1",
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "cloudevent": "^0.3.0",
     "express": "^4.16.4",
     "inversify": "^5.0.1",
