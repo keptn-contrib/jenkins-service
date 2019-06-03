@@ -1,4 +1,4 @@
-# Release Notes 0.2.1
+# Release Notes 0.3.0
 
 ## New Features
 - new Jenkins image: keptn/jenkins:0.6.0
