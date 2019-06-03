@@ -33,7 +33,12 @@ pipeline {
     label 'kubegit'
   }
   stages {
-    stage('Checkout configuration') {
+    stage('Deploy service - direct') {
+      when {
+        expression {
+          return env.DEPLOYMENTSTRATEGY ==~ 'direct' 
+        }
+      }
       steps {
         container('git') {
           withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
@@ -43,19 +48,12 @@ pipeline {
             sh "cd ${env.PROJECT} && git checkout ${env.STAGE}"
           }
         }
-      }
-    }
-    stage('Deploy service - direct') {
-      when {
-        expression {
-          return env.DEPLOYMENTSTRATEGY ==~ 'direct' 
-        }
-      }
-      steps {
         container('helm') {
-          sh "helm init --client-only"
-          sh "cd ${env.PROJECT} && helm dep update helm-chart/"
-          sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --recreate-pods"
+          script {
+            sh "helm init --client-only"
+            sh "cd ${env.PROJECT} && helm dep update helm-chart/"
+            sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
+          }
         }
       }
     }
@@ -66,10 +64,37 @@ pipeline {
         }
       }
       steps {
-        container('helm') {
-          sh "helm init --client-only"
-          sh "cd ${env.PROJECT} && helm dep update helm-chart/"
-          sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --recreate-pods"
+        container('git') {
+          withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+            sh "rm -rf ${env.PROJECT}"
+            sh "git config --global user.email ${env.GITHUB_USER_EMAIL}"
+            sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${env.GITHUBORG}/${env.PROJECT}"
+            sh "cd ${env.PROJECT} && git checkout ${env.STAGE}"
+            sh "cd ${env.PROJECT} && git reset --hard HEAD~1"
+          }
+        }
+        container('helm') {    
+          script {
+            sh "helm init --client-only"
+            sh "cd ${env.PROJECT} && helm dep update helm-chart/"
+            sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
+          }
+        }
+        container('kubectl') {    
+          script {
+            sh "kubectl rollout status deployment/" + "${env.SERVICE}" + "-blue" + " --namespace " + "${env.PROJECT}-${env.STAGE}"
+            sh "kubectl rollout status deployment/" + "${env.SERVICE}" + "-green" + " --namespace " + "${env.PROJECT}-${env.STAGE}"
+          }
+        }
+        container('git') {
+          withCredentials([usernamePassword(credentialsId: 'git-credentials-acm', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+            sh "cd ${env.PROJECT} && git reset --hard 'HEAD@{1}'"
+          }
+        }
+        container('helm') {    
+          script {            
+            sh "cd ${env.PROJECT} && helm upgrade --install ${env.PROJECT}-${env.STAGE} ./helm-chart --namespace ${env.PROJECT}-${env.STAGE} --wait"
+          }
         }
       }
     }
