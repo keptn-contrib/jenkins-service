@@ -40,23 +40,6 @@ spec:
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Subscription
 metadata:
-  name: jenkins-configuration-changed-subscription
-  namespace: keptn
-spec:
-  channel:
-    apiVersion: eventing.knative.dev/v1alpha1
-    kind: Channel
-    name: configuration-changed
-  subscriber:
-    ref:
-      apiVersion: serving.knative.dev/v1alpha1
-      kind: Service
-      name: jenkins-service
-
----
-apiVersion: eventing.knative.dev/v1alpha1
-kind: Subscription
-metadata:
   name: jenkins-deployment-finished-subscription
   namespace: keptn
 spec:
