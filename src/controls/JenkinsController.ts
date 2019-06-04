@@ -70,8 +70,7 @@ export class JenkinsController implements interfaces.Controller {
       } else {
         if (request.body.shkeptncontext) {
           utils.logMessage(request.body.shkeptncontext,
-            `This service does not handle the event type ${request.body.eventType}.`);
-          utils.logMessage(request.body.shkeptncontext, `Request.body= ${JSON.stringify(request.body)}`);
+            `This service does not handle the event type ${request.body.type}.`);
         }
       }
     }
