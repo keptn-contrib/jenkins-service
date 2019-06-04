@@ -59,10 +59,10 @@ export class JenkinsController implements interfaces.Controller {
       const cloudEvent : CloudEvent = request.body;
       const jenkinsSvc : JenkinsService = await JenkinsService.getInstance();
 
-      if (request.body.type == 'sh.keptn.events.deployment-finished') {
-        await jenkinsSvc.startTests(cloudEvent.data, cloudEvent.shkeptncontext, cloudEvent.time);
+      if (request.body.type == 'sh.keptn.events.configuration-changed') {
+        await jenkinsSvc.deployService(cloudEvent.data, cloudEvent.shkeptncontext);	
 
-      } else if (request.body.type == 'sh.keptn.events.tests-finished') {
+       } else if (request.body.type == 'sh.keptn.events.deployment-finished') {
         await jenkinsSvc.evaluateTests(cloudEvent.data, cloudEvent.shkeptncontext);
 
       } else if (request.body.type === 'sh.keptn.events.evaluation-done') {
