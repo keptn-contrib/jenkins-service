@@ -13,11 +13,11 @@ source ./deploy_utils.sh
 # Deploy Jenkins
 rm -f config/jenkins/gen/k8s-jenkins-deployment.yml
 
-GATEWAY=$(kubectl describe svc istio-ingressgateway -n istio-system | grep "LoadBalancer Ingress:" | sed 's~LoadBalancer Ingress:[ \t]*~~')
-verify_variable "$GATEWAY" "GATEWAY is empty and could not be derived from the Istio ingress gateway."
+export DOMAIN=$(kubectl get cm keptn-domain -n keptn -oyaml | yq r - data.app_domain)
+verify_variable "$DOMAIN" "DOMAIN is empty and could not be read from the keptn-domain ConfigMap."
 
 cat config/jenkins/k8s-jenkins-deployment.yml | \
-  sed 's~GATEWAY_PLACEHOLDER~'"$GATEWAY"'~' | \
+  sed 's~DOMAIN_PLACEHOLDER~'"$DOMAIN"'~' | \
   sed 's~GITHUB_USER_EMAIL_PLACEHOLDER~'"$GITHUB_USER_EMAIL"'~' | \
   sed 's~GITHUB_ORGANIZATION_PLACEHOLDER~'"$GITHUB_ORGANIZATION"'~' | \
   sed 's~DOCKER_REGISTRY_IP_PLACEHOLDER~'"$REGISTRY_URL"'~' >> config/jenkins/gen/k8s-jenkins-deployment.yml
@@ -39,7 +39,7 @@ wait_for_deployment_in_namespace "jenkins" "keptn"
 echo "Wait 100s for Jenkins..."
 sleep 100
 
-JENKINS_URL="jenkins.keptn.$GATEWAY.xip.io"
+JENKINS_URL="jenkins.keptn.$DOMAIN"
 
 # Configure Jenkins with GitHub credentials
 RETRY=0; RETRY_MAX=12; 
