@@ -1,7 +1,7 @@
 {
-  "name": "sh.keptn.github-service",
+  "name": "jenkins-service",
   "version": "0.1.0",
-  "description": "Jenkins service",
+  "description": "keptn service that uses Jenkins for continuous deployment tasks",
   "main": "dist/server.js",
   "scripts": {
     "build-ts": "tsc",
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/keptn/github-service.git"
+    "url": "git+https://github.com/keptn/jenkins-service.git"
   },
-  "author": "Johannes Bräuer",
+  "author": "Johannes Bräuer (@braeuer_j)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/keptn/github-service/issues"
+    "url": "https://github.com/keptn/jenkins-service/issues"
   },
-  "homepage": "https://github.com/keptn/github-service#readme",
+  "homepage": "https://github.com/keptn/jenkins-service#readme",
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@types/express": "^4.16.1",
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "cloudevent": "^0.3.0",
     "express": "^4.16.4",
     "inversify": "^5.0.1",
