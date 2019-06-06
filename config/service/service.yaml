@@ -1,5 +1,4 @@
-# This is a very simple Knative Service that writes the input request to its log.
-
+---
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
@@ -13,7 +12,6 @@ spec:
       revisionTemplate:
         metadata:
           annotations:
-            # Disable scale to zero with a minScale of 1.
             autoscaling.knative.dev/minScale: "1"
         spec:
           container:
@@ -34,8 +32,6 @@ spec:
                 secretKeyRef:
                   name: jenkins-secret
                   key: password         
-
-# Subscription from the GcpPubSubSource's output Channel to the Knative Service below.
 ---
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Subscription
@@ -52,7 +48,6 @@ spec:
       apiVersion: serving.knative.dev/v1alpha1
       kind: Service
       name: jenkins-service
-
 #---
 #apiVersion: eventing.knative.dev/v1alpha1
 #kind: Subscription
