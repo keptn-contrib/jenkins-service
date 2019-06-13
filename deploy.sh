@@ -81,3 +81,7 @@ verify_kubectl $? "Creating secret for jenkins-service failed."
 kubectl delete -f config/service/service.yaml --ignore-not-found
 kubectl apply -f config/service/service.yaml
 verify_kubectl $? "Deploying jenkins-service failed."
+
+# Install tiller for helm
+kubectl apply -f config/tiller/tiller.yaml
+helm init --service-account tiller
