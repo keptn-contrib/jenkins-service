@@ -81,13 +81,3 @@ verify_kubectl $? "Creating secret for jenkins-service failed."
 kubectl delete -f config/service/service.yaml --ignore-not-found
 kubectl apply -f config/service/service.yaml
 verify_kubectl $? "Deploying jenkins-service failed."
-
-# Deploy Tiller for Helm
-kubectl create serviceaccount tiller -n kube-system
-verify_kubectl $? "Creating service account for tiller in namespace kube-system failed."
-
-kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
-verify_kubectl $? "Creating cluster role binding for tiller failed."
-
-helm init --service-account tiller
-verify_install_step $? "Helm init failed."
